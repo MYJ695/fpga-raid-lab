@@ -26,7 +26,148 @@
 - 一个 RTL 小模块或 testbench；
 - 一条踩坑记录。
 
-## 通关地图
+## 先看这里：一眼通关顺序
+
+如果你第一次打开这个仓库，不要从文件树里乱点。
+
+按下面 4 段走就行：
+
+```text
+第 1 段：先看 7 篇文档，建立概念地图
+第 2 段：再跑 3 个 Python demo，把 RAID 行为看见
+第 3 段：再跑 1 个 pytest，确认模型没坏
+第 4 段：最后跑 2 个 RTL runner，看硬件小模块怎么验证
+```
+
+你可以把它当成一个小游戏：
+
+```text
+先知道规则 → 再看动画 → 再做检查 → 最后看硬件实现
+```
+
+### 第 1 段：按顺序看文档
+
+先只看这些文档。不要急着看 Python 和 RTL。
+
+| 顺序 | 文件 | 你要搞懂的问题 |
+|---:|---|---|
+| 1 | [`docs/raid_basics.md`](docs/raid_basics.md) | RAID 到底想解决什么问题？容量、性能、可靠性怎么取舍？ |
+| 2 | [`docs/raid0_mapping.md`](docs/raid0_mapping.md) | 一笔连续数据，为什么会被切到多块盘上？ |
+| 3 | [`docs/raid1_mirror.md`](docs/raid1_mirror.md) | 为什么“复制一份”能让坏一块盘后继续读？ |
+| 4 | [`docs/raid5_parity.md`](docs/raid5_parity.md) | XOR parity 为什么能在坏一块盘后把数据算回来？ |
+| 5 | [`docs/raid5_write_path.md`](docs/raid5_write_path.md) | RAID5 写入为什么比读更麻烦？full-stripe、RMW、reconstruct write 分别是什么？ |
+| 6 | [`docs/write_hole.md`](docs/write_hole.md) | 为什么写到一半断电，会留下 data/parity 不一致的坑？ |
+| 7 | [`docs/rebuild_and_scrub.md`](docs/rebuild_and_scrub.md) | 坏盘重建和巡检 scrub 到底在检查什么？ |
+
+看到这里，你只需要形成一个直觉：
+
+```text
+RAID 不是“几块盘绑一起”这么简单。
+它真正难的地方，是映射、校验、故障、写入一致性和恢复。
+```
+
+### 第 2 段：跑 Python demo，把抽象规则看见
+
+文档看完后，进入仓库根目录，依次执行：
+
+```bash
+python labs/level0_python_model/demo_layout.py
+python labs/level0_python_model/demo_write_hole.py
+python labs/level0_python_model/demo_rebuild_and_scrub.py
+```
+
+这 3 个脚本分别看这些东西：
+
+| 顺序 | 命令 | 你会看到什么 |
+|---:|---|---|
+| 1 | `python labs/level0_python_model/demo_layout.py` | RAID0/1/5 的数据布局长什么样 |
+| 2 | `python labs/level0_python_model/demo_write_hole.py` | write hole 怎么发生，为什么它是潜伏风险 |
+| 3 | `python labs/level0_python_model/demo_rebuild_and_scrub.py` | rebuild/scrub 怎么把问题暴露出来 |
+
+如果你只想先体验项目，跑完这 3 个 demo 就够了。
+
+### 第 3 段：跑 Python 测试，确认模型是可信的
+
+然后执行：
+
+```bash
+python -m pytest -q labs/level0_python_model
+```
+
+它的作用不是给初学者“增加负担”。
+
+它是在告诉你：
+
+```text
+前面那些 Python demo 不是随手打印。
+它们背后有一套可检查的 RAID 行为模型。
+```
+
+### 第 4 段：最后再看 RTL，不要一上来就看 Verilog
+
+等你理解了 Python 模型，再进入 FPGA/RTL 部分。
+
+先看这篇：
+
+| 顺序 | 文件 | 你要搞懂的问题 |
+|---:|---|---|
+| 1 | [`docs/fpga_architecture.md`](docs/fpga_architecture.md) | 哪些 RAID 逻辑适合放进 FPGA？为什么先做小模块？ |
+| 2 | [`rtl/README.md`](rtl/README.md) | RTL 目录怎么组织？每个 runner 是干什么的？ |
+
+然后执行：
+
+```bash
+python rtl/xor_engine/run_tests.py
+python rtl/lba_mapper/run_tests.py
+```
+
+这两个命令分别验证：
+
+| 顺序 | 命令 | 它在验证什么 |
+|---:|---|---|
+| 1 | `python rtl/xor_engine/run_tests.py` | XOR parity 这个最小硬件积木是否正确 |
+| 2 | `python rtl/lba_mapper/run_tests.py` | RAID0 的 LBA 映射能不能翻译成组合逻辑 |
+
+如果这里能跑通，你就完成了第一轮通关：
+
+```text
+文档理解 → Python 行为模型 → 自动测试 → RTL 小模块仿真
+```
+
+## 你现在应该先做什么？
+
+如果你不知道从哪里开始，只做这 5 件事：
+
+```bash
+# 1. 先读 README 这一节
+# 2. 再读 docs/raid_basics.md
+# 3. 再读 docs/raid0_mapping.md
+# 4. 然后跑第一个 demo
+python labs/level0_python_model/demo_layout.py
+
+# 5. 最后回来继续读 docs/raid1_mirror.md
+```
+
+不要一开始就打开 `rtl/`。
+
+也不要一开始就研究所有 Python 源码。
+
+先建立直觉，再看实现。
+
+## 项目定位
+
+这是一个 **学习型 + 设计型 + 实验型** 仓库。
+
+不是资料堆场，也不是论文复读机。
+
+每个阶段都要留下可检查产出：
+
+- 一页解释；
+- 一个可运行模型；
+- 一个 RTL 小模块或 testbench；
+- 一条踩坑记录。
+
+## 当前路线图
 
 | Level | 主题 | 核心问题 | 产出 |
 |---|---|---|---|
@@ -38,76 +179,6 @@
 | 5 | 重建 | 坏盘换新盘怎么补数据？ | rebuild engine 模型 |
 | 6 | RAID6 | 双校验为什么需要 GF？ | P/Q parity 学习实验 |
 | 7 | 接真实设备 | 怎么接 SATA/NVMe/PCIe？ | 接口方案调研 |
-
-## 当前优先级
-
-先做 **Level 0 ~ Level 5** 的 Python/文档闭环：
-
-```text
-Python golden model → RAID0/1/5 行为跑通 → RAID5 写路径风险 → rebuild/scrub 维护路径 → FPGA 架构边界 → RTL XOR/lba_mapper → testbench 对拍
-```
-
-当前可运行入口背后的分工很简单：
-
-```text
-Python demo：先把 RAID 行为演给你看；
-Python pytest：保证这些行为模型能作为 golden reference；
-RTL runner：把同一条规则翻译成 Verilog，再用 vector/testbench 对拍。
-```
-
-当前可运行入口：
-
-- [`TODO.md`](TODO.md)：小任务板；
-- [`docs/raid_basics.md`](docs/raid_basics.md)：RAID0/1/5 入门桥接页；
-- [`docs/raid0_mapping.md`](docs/raid0_mapping.md)：RAID0 LBA 到 disk/chunk 的映射公式；
-- [`docs/raid1_mirror.md`](docs/raid1_mirror.md)：RAID1 镜像、故障切换和容量代价；
-- [`docs/raid5_parity.md`](docs/raid5_parity.md)：RAID5 XOR 校验、轮转 parity 和降级读；
-- [`docs/raid5_write_path.md`](docs/raid5_write_path.md)：RAID5 full-stripe write、RMW 和 reconstruct write；
-- [`docs/write_hole.md`](docs/write_hole.md)：RAID5 partial write 被打断后的 data/parity 不一致风险；
-- [`docs/rebuild_and_scrub.md`](docs/rebuild_and_scrub.md)：rebuild/scrub 如何发现或放大潜伏 mismatch；
-- [`docs/fpga_architecture.md`](docs/fpga_architecture.md)：从 Python golden model 过渡到第一批 RTL 小模块；
-- [`rtl/README.md`](rtl/README.md)：RTL 小模块目录约定和 runner 约定；
-- [`rtl/xor_engine/`](rtl/xor_engine/)：第一块可仿真的组合 XOR RTL，对拍 Python golden vector；
-- [`rtl/lba_mapper/`](rtl/lba_mapper/)：RAID0 LBA 映射组合 RTL、testbench 和一键 runner；
-- [`sim/README.md`](sim/README.md)：跨模块仿真预留区说明；
-- [`labs/level0_python_model/`](labs/level0_python_model/)：RAID0/1/5 Python golden model。
-
-建议按这条小路线通关：
-
-1. **Step 0：先看 RAID 基础**：打开 `docs/raid_basics.md`，知道多盘组队在取舍什么；
-2. **Step 1：看 RAID0 映射**：打开 `docs/raid0_mapping.md`，理解 LBA 怎么落到具体硬盘；
-3. **Step 2：看 RAID1 镜像**：打开 `docs/raid1_mirror.md`，理解为什么复制能换来故障切换；
-4. **Step 3：看 RAID5 parity**：打开 `docs/raid5_parity.md`，理解 XOR 怎么提供单盘容错；
-5. **Step 4：看 RAID5 write path**：打开 `docs/raid5_write_path.md`，区分 full-stripe write、RMW 和 reconstruct write；
-6. **Step 5：看 write hole**：打开 `docs/write_hole.md`，理解 partial write 被打断后为什么会留下潜伏风险；
-7. **Step 6：看 rebuild/scrub**：打开 `docs/rebuild_and_scrub.md`，理解潜伏 mismatch 什么时候被发现、如何上报；
-8. **Step 7：跑可视化 demo**：观察 RAID0/1/5 的布局，并亲眼看到 write hole 如何潜伏到降级恢复时才爆；
-9. **Step 8：对照源码看映射、镜像和校验**：打开 `labs/level0_python_model/raid_model.py`，找到 `RAID0.map_lba()`、`RAID1.write()`、`RAID1.read()`、`RAID5.layout_row()`、`RAID5.write_full_stripe()`；
-10. **Step 9：看 FPGA 架构边界**：打开 `docs/fpga_architecture.md`，理解为什么先做 `xor_engine`、`lba_mapper`、`stripe_manager`；
-11. **Step 10：跑 RTL XOR**：执行 `python rtl/xor_engine/run_tests.py`，用 Icarus Verilog 跑第一块可对拍小模块；
-12. **Step 11：跑 RTL LBA mapper**：执行 `python rtl/lba_mapper/run_tests.py`，观察 RAID0 LBA 如何落到 disk 和 disk_lba；
-13. **Step 12：跑 Python 测试**：确认模型行为没有坏。
-
-```bash
-python labs/level0_python_model/demo_layout.py
-python labs/level0_python_model/demo_write_hole.py
-python labs/level0_python_model/demo_rebuild_and_scrub.py
-python -m pytest -q labs/level0_python_model
-python rtl/xor_engine/run_tests.py
-python rtl/lba_mapper/run_tests.py
-```
-
-其中 `python rtl/xor_engine/run_tests.py` 和 `python rtl/lba_mapper/run_tests.py` 是当前 RTL 关卡的一键入口：它们会生成/读取 golden vector、编译对应 RTL、运行 testbench，并覆盖少量参数化形状。若想手动拆开看 Icarus Verilog 命令，可以先从 XOR 这个最小模块开始：
-
-```bash
-python rtl/xor_engine/gen_vectors.py
-iverilog -o rtl/xor_engine/tb_xor_engine.vvp rtl/xor_engine/xor_engine.v rtl/xor_engine/tb_xor_engine.v
-vvp rtl/xor_engine/tb_xor_engine.vvp
-```
-
-这条手动命令会在 `rtl/xor_engine/` 留下 `tb_xor_engine.vvp`。它只是 Icarus Verilog 编译产物，可以删除，也已被 `.gitignore` 忽略；若想保持目录清爽，优先使用上面的一键 runner。
-
-当前策略：单个 RTL 模块的 runner 先放在模块目录，便于读者就地理解；等 RTL 模块继续增多后，再考虑把多模块总入口收敛到 `sim/run_all.py`。
 
 ## 仓库结构
 
