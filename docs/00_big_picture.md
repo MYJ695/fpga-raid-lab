@@ -1,70 +1,112 @@
-# 00 - 一张图看懂 FPGA RAID
+# 00 - 一张图看懂星载 NVMe RAID 固存
 
 ## 核心结论
 
-FPGA RAID 不是“写一个 XOR 模块”，而是做一个多盘存储小队的调度官。
+这套系统不是“写一个 XOR 模块”，而是让 FPGA 做一个高速数据仓库的调度员：
 
-它要回答四个问题：
-
-1. 数据放哪块盘？
-2. 多块盘怎么并行读写？
-3. 坏一块盘怎么恢复？
-4. 写到一半出事，怎么不把阵列搞坏？
+```text
+多路载荷数据进来，要被分流、排队、校验、写入多块 NVMe SSD；
+同时还要能监控状态、处理掉盘、控制重建、支持验收测试。
+```
 
 ## 整体视角
 
 ```text
-Host / CPU
-   |
-   |  read/write command: LBA + length + buffer
-   v
-+-----------------------+
-| FPGA RAID Controller  |
-|                       |
-| cmd_queue             |
-| lba_mapper            |
-| stripe_manager        |
-| read/write_engine     |
-| parity_engine         |
-| rebuild_engine        |
-+-----------------------+
-   |        |        |
-   v        v        v
-Disk0    Disk1    Disk2 ...
+8x Payload Streams
+AXIS 64-bit, valid/ready
+        |
+        v
++-----------------------------+
+| FPGA Solid-State Recorder   |
+|                             |
+| Data Plane                  |
+|  - stream ingress           |
+|  - buffering / arbitration  |
+|  - lba/stripe mapper        |
+|  - raid read/write engine   |
+|  - xor/parity engine        |
+|  - rebuild/scrub datapath   |
+|                             |
+| Control Plane               |
+|  - AXI-Lite registers       |
+|  - mode/config/status       |
+|  - error injection          |
+|  - telemetry/counters       |
++-----------------------------+
+        |
+        v
++-----------------------------+
+| NVMe Host / PCIe subsystem  |
++-----------------------------+
+        |
+        v
+SSD0  SSD1  SSD2  SSD3  SSD4  SSD5 ...
 ```
 
-## 几个角色
+## 用费曼法解释
 
-- **Host**：老板，只说“我要读/写 LBA”。
-- **RAID Controller**：调度官，把逻辑地址拆成多盘动作。
-- **Disk**：队员，负责保存自己的 chunk。
-- **Parity**：侦探，某个队员失踪时帮忙还原数据。
-- **Metadata**：账本，记录阵列状态、坏盘、重建进度。
+把它想成仓库：
 
-## FPGA 值得做什么
+- **8 路输入流**：8 条传送带同时送箱子；
+- **FPGA**：仓库调度员，决定箱子放到哪个货架；
+- **RAID0**：轮流放，速度快，但坏一个货架就缺货；
+- **RAID1**：每箱放两份，可靠但占空间；
+- **RAID5**：多数箱子正常放，再放一份“校验线索”，坏一个货架还能推理回来；
+- **AXI-Lite 寄存器**：仓库看板和控制台；
+- **NVMe Host**：真正和 SSD 货架对话的叉车系统。
 
-适合硬件化：
+## 四个层次
 
-- LBA 映射；
-- 多通道数据搬运；
-- XOR 校验；
-- AXI-Stream 流水线；
-- 简单读写状态机；
-- 故障读重构。
+### 1. 数据面
+
+回答：数据怎么高速流动？
+
+关键词：AXIS、valid/ready、帧边界、字节有效、缓存、仲裁、背压、吞吐统计。
+
+### 2. RAID 面
+
+回答：数据怎么分到多块盘，坏盘后怎么读？
+
+关键词：LBA 映射、chunk、stripe、RAID0/1/5、parity、degraded read、rebuild、scrub。
+
+### 3. 控制面
+
+回答：系统怎么配置、监控、定位问题？
+
+关键词：AXI-Lite、阵列模式、成员盘状态、错误计数、重建进度、关键告警、错误注入。
+
+### 4. 设备面
+
+回答：FPGA 怎么和真实 SSD 对话？
+
+关键词：NVMe 1.2/1.3、PCIe Gen3 x4、namespace、admin command、I/O queue、SMART/health log。
+
+本仓库第一阶段重点在 **RAID 面 + 少量数据面/控制面概念**。NVMe Host 是后续独立大课题。
+
+## FPGA 值得先做什么
+
+适合早期硬件化小实验：
+
+- LBA 到 disk/chunk 的映射；
+- RAID5 XOR parity；
+- full-stripe write 的动作拆分；
+- valid/ready 级别的小握手；
+- 状态计数器、错误注入开关的寄存器概念；
+- 简化的 rebuild/scrub 数据路径。
 
 不适合一开始全硬件化：
 
-- 复杂元数据；
-- 掉电恢复；
-- 热插拔策略；
-- 完整 NVMe/SATA 协议栈；
-- 管理界面。
+- 完整 NVMe Host 协议栈；
+- PCIe 复杂事务层；
+- 真实 8 路 40Gbps 数据面；
+- 掉电保护和完整元数据日志；
+- 板级热设计、时序收敛和 72 小时稳定性。
 
 ## 第一阶段边界
 
-我们先不用真实硬盘。
+我们先不用真实 SSD。
 
-用 Python/BRAM 模拟多块盘：
+用 Python/BRAM/仿真模型代表多块盘：
 
 ```text
 virtual disk0 = bytearray()
@@ -73,4 +115,4 @@ virtual disk2 = bytearray()
 virtual disk3 = bytearray()
 ```
 
-先证明 RAID 算法和映射逻辑是对的，再考虑真实接口。
+先证明 RAID 算法和映射逻辑是对的，再逐步讨论 AXIS、AXI-Lite、NVMe 和板级工程。
