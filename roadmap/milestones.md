@@ -80,7 +80,7 @@
 
 候选产出：
 
-- AXI-Lite 寄存器概念文档；
+- `docs/axis_axi_lite_basics.md` 中的 AXI-Lite 寄存器概念；
 - 成员盘状态机草图；
 - 错误注入和统计计数器清单；
 - 重建进度、告警、中断的最小模型。
@@ -89,7 +89,7 @@
 
 - 新人能解释为什么工程样机不仅要能写数据，还要能回读状态、注入故障、定位问题。
 
-状态：已在架构文档列出学习清单，未单独展开。
+状态：已通过 `docs/axis_axi_lite_basics.md` 完成入门展开；成员盘状态机和中断模型仍留作后续。
 
 ## Milestone 5：数据面接口入门
 
@@ -97,7 +97,7 @@
 
 候选产出：
 
-- AXIS valid/ready 费曼解释；
+- `docs/axis_axi_lite_basics.md` 中的 AXIS valid/ready 费曼解释；
 - 2 路简化 stream ingress Python/RTL 小实验；
 - 背压、帧边界、字节有效和错误反馈说明。
 
@@ -105,7 +105,7 @@
 
 - 能解释为什么“8 路输入”不是简单 for 循环，而涉及仲裁、缓存、限速和统计。
 
-状态：待做。
+状态：AXIS/背压概念已完成；2 路简化 stream ingress 小实验待做。
 
 ## Milestone 6：真实接口调研
 

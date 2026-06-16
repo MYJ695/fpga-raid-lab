@@ -68,18 +68,19 @@
 | 1 | [`docs/requirements_alignment.md`](docs/requirements_alignment.md) | 技术要求到底要什么？哪些是本仓库能覆盖的前期知识？ |
 | 2 | [`docs/feynman_learning_path.md`](docs/feynman_learning_path.md) | 如果把系统讲给新人听，应该怎么讲？ |
 | 3 | [`docs/00_big_picture.md`](docs/00_big_picture.md) | FPGA RAID/NVMe 固存的整体框架是什么？ |
+| 4 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
 
 ### 第 2 段：按顺序看 RAID 文档
 
 | 顺序 | 文件 | 你要搞懂的问题 |
 |---:|---|---|
-| 4 | [`docs/raid_basics.md`](docs/raid_basics.md) | RAID 到底想解决什么问题？容量、性能、可靠性怎么取舍？ |
-| 5 | [`docs/raid0_mapping.md`](docs/raid0_mapping.md) | 一笔连续数据，为什么会被切到多块盘上？ |
-| 6 | [`docs/raid1_mirror.md`](docs/raid1_mirror.md) | 为什么“复制一份”能让坏一块盘后继续读？ |
-| 7 | [`docs/raid5_parity.md`](docs/raid5_parity.md) | XOR parity 为什么能在坏一块盘后把数据算回来？ |
-| 8 | [`docs/raid5_write_path.md`](docs/raid5_write_path.md) | RAID5 写入为什么比读更麻烦？ |
-| 9 | [`docs/write_hole.md`](docs/write_hole.md) | 为什么写到一半断电，会留下 data/parity 不一致的坑？ |
-| 10 | [`docs/rebuild_and_scrub.md`](docs/rebuild_and_scrub.md) | 坏盘重建和巡检 scrub 到底在检查什么？ |
+| 5 | [`docs/raid_basics.md`](docs/raid_basics.md) | RAID 到底想解决什么问题？容量、性能、可靠性怎么取舍？ |
+| 6 | [`docs/raid0_mapping.md`](docs/raid0_mapping.md) | 一笔连续数据，为什么会被切到多块盘上？ |
+| 7 | [`docs/raid1_mirror.md`](docs/raid1_mirror.md) | 为什么“复制一份”能让坏一块盘后继续读？ |
+| 8 | [`docs/raid5_parity.md`](docs/raid5_parity.md) | XOR parity 为什么能在坏一块盘后把数据算回来？ |
+| 9 | [`docs/raid5_write_path.md`](docs/raid5_write_path.md) | RAID5 写入为什么比读更麻烦？ |
+| 10 | [`docs/write_hole.md`](docs/write_hole.md) | 为什么写到一半断电，会留下 data/parity 不一致的坑？ |
+| 11 | [`docs/rebuild_and_scrub.md`](docs/rebuild_and_scrub.md) | 坏盘重建和巡检 scrub 到底在检查什么？ |
 
 看到这里，你只需要形成一个直觉：
 
@@ -133,7 +134,7 @@ python rtl/lba_mapper/run_tests.py
 | 2 | RAID0/1/5 | 条带、镜像、校验怎么工作？ | 文档 + demo + pytest |
 | 3 | 小写与维护 | partial write、write hole、rebuild 为什么难？ | 故障演示 + scrub/rebuild 解释 |
 | 4 | RTL 最小积木 | 哪些 RAID 逻辑适合硬件化？ | xor_engine、lba_mapper |
-| 5 | 工程接口调研 | AXIS/AXI-Lite/NVMe/PCIe 怎么接入地图？ | 架构说明和后续调研清单 |
+| 5 | 工程接口调研 | AXIS/AXI-Lite/NVMe/PCIe 怎么接入地图？ | 接口补课页 + 架构说明 + 后续调研清单 |
 
 ## 仓库结构
 
