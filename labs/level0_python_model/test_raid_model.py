@@ -156,3 +156,43 @@ def test_raid5_full_stripe_write_fails_if_target_disk_failed():
     with pytest.raises(DiskFailedError):
         raid.write_full_stripe(0, [b"A000", b"B111"])
 
+
+
+
+def test_control_plane_shadow_fault_rebuild_and_scrub_flow():
+    from demo_control_plane import ControlPlaneShadow, IRQ
+
+    model = ControlPlaneShadow(member_count=4)
+    model.enable_irq(
+        int(IRQ.MEMBER_FAILED)
+        | int(IRQ.ERROR_INJECT_DONE)
+        | int(IRQ.REBUILD_DONE)
+        | int(IRQ.SCRUB_MISMATCH)
+    )
+    model.bring_up("RAID5")
+    assert model.snapshot()["GLOBAL_STATUS"] == "RUNNING"
+    assert model.snapshot()["MEMBER_STATE"] == ["ACTIVE"] * 4
+
+    model.inject_member_fail(2)
+    assert model.snapshot()["GLOBAL_STATUS"] == "DEGRADED"
+    assert model.snapshot()["MEMBER_STATE"][2] == "FAILED"
+    assert model.registers["ERROR_INJECT_STATUS"] == "DONE"
+    assert model.registers["IRQ_STATUS"] & int(IRQ.MEMBER_FAILED)
+    assert model.registers["IRQ_STATUS"] & int(IRQ.ERROR_INJECT_DONE)
+
+    model.clear_irq(int(IRQ.MEMBER_FAILED) | int(IRQ.ERROR_INJECT_DONE))
+    assert not (model.registers["IRQ_STATUS"] & int(IRQ.MEMBER_FAILED))
+    assert not (model.registers["IRQ_STATUS"] & int(IRQ.ERROR_INJECT_DONE))
+
+    model.start_rebuild(2)
+    model.step_rebuild(50)
+    assert model.snapshot()["GLOBAL_STATUS"] == "REBUILDING"
+    assert model.snapshot()["REBUILD_PROGRESS"] == 50
+    model.step_rebuild(100)
+    assert model.snapshot()["GLOBAL_STATUS"] == "RUNNING"
+    assert model.snapshot()["MEMBER_STATE"] == ["ACTIVE"] * 4
+    assert model.registers["IRQ_STATUS"] & int(IRQ.REBUILD_DONE)
+
+    model.run_scrub(mismatch=True)
+    assert model.snapshot()["SCRUB_MISMATCH_COUNT"] == 1
+    assert model.registers["IRQ_STATUS"] & int(IRQ.SCRUB_MISMATCH)

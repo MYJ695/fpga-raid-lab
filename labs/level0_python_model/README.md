@@ -31,6 +31,20 @@ python demo_layout.py
 - RAID1：同一个 LBA 如何复制到镜像盘；
 - RAID5：每个 stripe 的数据块和轮转 parity 在哪里。
 
+## 看控制面怎么“管系统”
+
+```bash
+python demo_control_plane.py
+```
+
+这个 demo 不写 AXI-Lite RTL，只做寄存器影子模型。它按顺序演示：
+
+1. 上电后设置 IRQ_ENABLE、RAID_MODE 和 MEMBER_MASK；
+2. 注入 SSD#2 掉线，观察 GLOBAL_STATUS、MEMBER_STATE、IRQ_STATUS；
+3. 软件用 W1C 方式清除已处理 IRQ；
+4. 启动 rebuild，观察 REBUILD_PROGRESS 从 0 到 100；
+5. 运行 scrub，并看到 parity mismatch 如何留下计数和告警。
+
 示意：
 
 ```text
@@ -44,7 +58,8 @@ stripe 1 | D3    | P     | D4    | D5
 
 - `raid_model.py`：VirtualDisk、RAID0、RAID1、RAID5 最小模型；
 - `test_raid_model.py`：基础行为和边界行为测试；
-- `demo_layout.py`：打印 RAID0/1/5 的 ASCII 布局。
+- `demo_layout.py`：打印 RAID0/1/5 的 ASCII 布局；
+- `demo_control_plane.py`：演示控制面寄存器影子模型，不实现 AXI-Lite RTL。
 
 ## 当前边界
 
@@ -52,5 +67,6 @@ stripe 1 | D3    | P     | D4    | D5
 - RAID0 只负责条带化，任意成员盘故障都会让映射到该盘的数据不可读；
 - RAID1 支持从幸存镜像读取，但本模型不模拟 degraded write；
 - RAID5 只支持 full-stripe 写入、单盘降级读取和单盘重建；
+- 控制面 demo 只模拟软件可见状态，不连接真实 AXI-Lite、NVMe、SMART 或中断线；
 - 暂不处理 partial write、write hole、元数据、缓存和真实硬盘错误码；
 - 这里的模型是 RTL 之前的 golden model，不是高性能存储库。
