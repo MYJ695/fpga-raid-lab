@@ -72,7 +72,8 @@
 | 3 | [`docs/feynman_learning_path.md`](docs/feynman_learning_path.md) | 如果把系统讲给新人听，应该怎么讲？ |
 | 4 | [`docs/00_big_picture.md`](docs/00_big_picture.md) | FPGA RAID/NVMe 固存的整体框架是什么？ |
 | 5 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
-| 6 | [`docs/nvme_host_options.md`](docs/nvme_host_options.md) | 真实 NVMe Host 有哪些实现路线，为什么第一阶段先用抽象磁盘端口？ |
+| 6 | [`docs/control_plane_registers.md`](docs/control_plane_registers.md) | 软件如何配置阵列、读取状态、做错误注入和查看重建进度？ |
+| 7 | [`docs/nvme_host_options.md`](docs/nvme_host_options.md) | 真实 NVMe Host 有哪些实现路线，为什么第一阶段先用抽象磁盘端口？ |
 
 ### 第 2 段：按顺序看 RAID 文档
 
@@ -173,7 +174,7 @@ fpga-raid-lab/
 自己实现/验证 RAID 层核心逻辑
 复用或采购 NVMe/PCIe 等复杂接口 IP
 用 Python golden model + RTL testbench 做早期闭环
-把控制寄存器、状态遥测、错误注入纳入架构设计
+把控制寄存器、状态遥测、错误注入、重建进度纳入架构设计
 ```
 
 本仓库先把这些判断变成可学习、可验证的材料。

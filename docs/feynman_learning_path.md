@@ -104,11 +104,25 @@ RAID概念 -> Python模型 -> 小RTL模块 -> 架构地图
 - PCIe Gen3 x4 接入；
 - 8 路 AXIS 汇聚和背压；
 - DDR/缓存/队列调度；
-- AXI-Lite 寄存器表；
+- AXI-Lite 寄存器表（草案见 `docs/control_plane_registers.md`）；
 - 板级约束、时序、资源、热设计；
 - 72 小时稳定性和异常恢复测试。
 
 这不是失败，而是学习边界清楚：先把地图画对，再决定哪一块值得深入实现。
+
+## 第 5 关：补上控制面，不然系统不可验收
+
+很多新人会先盯着 RAID 数据怎么写，其实验收时还会追问另一类问题：
+
+```text
+现在是哪种 RAID 模式？
+哪块 SSD 降级了？
+错误注入是否真的触发？
+rebuild 走到多少？
+scrub 有没有发现 parity mismatch？
+```
+
+这些问题靠 AXI-Lite 控制面回答。可以先看 `docs/control_plane_registers.md`，把它理解成“软件和 FPGA 之间的共同账本”：软件写配置，硬件回状态，测试人员按这个账本做异常恢复和验收追踪。
 
 ## 推荐学习顺序
 
@@ -119,8 +133,9 @@ RAID概念 -> Python模型 -> 小RTL模块 -> 架构地图
 4. docs/raid5_parity.md               # 搞懂XOR恢复
 5. docs/raid5_write_path.md           # 搞懂RAID5写为什么难
 6. docs/axis_axi_lite_basics.md      # 搞懂数据传送带和控制台
-7. docs/nvme_host_options.md          # 搞懂真实SSD接入路线和边界
-8. docs/fpga_architecture.md          # 再看FPGA模块怎么拆
-9. labs/level0_python_model/          # 跑demo看现象
-10. rtl/xor_engine 和 rtl/lba_mapper  # 看最小硬件积木
+7. docs/control_plane_registers.md    # 搞懂寄存器、状态、错误注入和重建进度
+8. docs/nvme_host_options.md          # 搞懂真实SSD接入路线和边界
+9. docs/fpga_architecture.md          # 再看FPGA模块怎么拆
+10. labs/level0_python_model/         # 跑demo看现象
+11. rtl/xor_engine 和 rtl/lba_mapper  # 看最小硬件积木
 ```

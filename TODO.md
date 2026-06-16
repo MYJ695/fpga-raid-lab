@@ -49,6 +49,7 @@
 - [ ] 扩展 `rtl/lba_mapper`：加入 RAID5 parity rotation / data slot 映射
 - [ ] 实现 `rtl/stripe_manager`：full-stripe write -> per-disk DATA/PARITY action
 - [ ] 增加一个简化 2 路 AXIS valid/ready 教学 demo
+- [ ] 增加一个 Python `register_model` 教学 demo：模拟 RAID_MODE、ERROR_INJECT 和 IRQ_STATUS
 
 ## Questions / Decisions
 

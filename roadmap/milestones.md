@@ -144,3 +144,24 @@
 - 不把 Python/RTL 小 demo 误称为板级验收通过。
 
 状态：已完成第一版验收清单；后续可继续细化为测试用例模板。
+
+
+## Milestone 8：控制面寄存器草案
+
+目标：把技术要求里的 AXI-Lite、状态回读、故障注入、重建进度、告警和遥测刷新周期，翻译成学习阶段能理解的寄存器地图。
+
+产出：
+
+- `docs/control_plane_registers.md`
+- README 和费曼学习路径中的控制面入口
+- TODO 中的后续 `register_model` 教学 demo 任务
+
+验收：
+
+- 能说清 AXIS 数据面和 AXI-Lite 控制面的分工；
+- 能列出最小寄存器组：版本、全局控制、阵列模式、成员盘、错误注入、IRQ、rebuild、scrub、遥测；
+- 能解释为什么成员盘状态不能只有 good/bad；
+- 能解释 rebuild 和 scrub 的区别；
+- 明确当前只是前期调研和寄存器草案，不冒充完整 AXI-Lite 从设备或板级验收。
+
+状态：已完成第一版控制面寄存器草案；后续可做 Python register shadow model。

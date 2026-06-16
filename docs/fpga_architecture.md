@@ -174,7 +174,7 @@ write LBA 0..5
 2. `rebuild_engine`：遍历所有 stripe，把替换盘补回来；
 3. `scrub_engine`：后台读全条带并检查 parity mismatch；
 4. `axis_ingress_model`：简化 2~8 路 valid/ready 输入模型；
-5. `register_model`：AXI-Lite 寄存器影子模型；
+5. `register_model`：AXI-Lite 寄存器影子模型，寄存器草案见 [`control_plane_registers.md`](control_plane_registers.md)；
 6. NVMe Host 调研：自研、开源参考、厂商 IP 或 CPU/SoC 管理方案。
 
 ## 不要踩的坑
@@ -183,4 +183,4 @@ write LBA 0..5
 - 不要把 NVMe/PCIe 协议和 RAID 算法混在第一个实验里；
 - 不要只写 RTL 不写 testbench，否则读者不知道它对不对；
 - 不要用教程 demo 冒充工程样机性能；
-- 不要忽略控制面，工程验收会关心状态、告警、错误注入和版本一致性。
+- 不要忽略控制面，工程验收会关心状态、告警、错误注入、重建进度和版本一致性。
