@@ -52,9 +52,7 @@
 
 ## 先看这里：一眼通关顺序
 
-
 > 如果你只有 20 分钟、60 分钟或 2 小时，先看 [`docs/study_plan.md`](docs/study_plan.md)。它按时间预算和角色告诉你该读什么、该跳过什么，并提供术语速查。
-
 
 如果你第一次打开这个仓库，不要从文件树里乱点。
 
@@ -75,22 +73,22 @@
 | 2 | [`docs/acceptance_checklist.md`](docs/acceptance_checklist.md) | 技术要求里的验收项，如何翻译成教程自测和后续工程证据？ |
 | 3 | [`docs/feynman_learning_path.md`](docs/feynman_learning_path.md) | 如果把系统讲给新人听，应该怎么讲？ |
 | 4 | [`docs/study_plan.md`](docs/study_plan.md) | 按 20/60/120 分钟和不同角色选择学习路线 |
-| 4 | [`docs/00_big_picture.md`](docs/00_big_picture.md) | FPGA RAID/NVMe 固存的整体框架是什么？ |
-| 5 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
-| 6 | [`docs/control_plane_registers.md`](docs/control_plane_registers.md) | 软件如何配置阵列、读取状态、做错误注入和查看重建进度？ |
-| 7 | [`docs/nvme_host_options.md`](docs/nvme_host_options.md) | 真实 NVMe Host 有哪些实现路线，为什么第一阶段先用抽象磁盘端口？ |
+| 5 | [`docs/00_big_picture.md`](docs/00_big_picture.md) | FPGA RAID/NVMe 固存的整体框架是什么？ |
+| 6 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
+| 7 | [`docs/control_plane_registers.md`](docs/control_plane_registers.md) | 软件如何配置阵列、读取状态、做错误注入和查看重建进度？ |
+| 8 | [`docs/nvme_host_options.md`](docs/nvme_host_options.md) | 真实 NVMe Host 有哪些实现路线，为什么第一阶段先用抽象磁盘端口？ |
 
 ### 第 2 段：按顺序看 RAID 文档
 
 | 顺序 | 文件 | 你要搞懂的问题 |
 |---:|---|---|
-| 6 | [`docs/raid_basics.md`](docs/raid_basics.md) | RAID 到底想解决什么问题？容量、性能、可靠性怎么取舍？ |
-| 7 | [`docs/raid0_mapping.md`](docs/raid0_mapping.md) | 一笔连续数据，为什么会被切到多块盘上？ |
-| 8 | [`docs/raid1_mirror.md`](docs/raid1_mirror.md) | 为什么“复制一份”能让坏一块盘后继续读？ |
-| 9 | [`docs/raid5_parity.md`](docs/raid5_parity.md) | XOR parity 为什么能在坏一块盘后把数据算回来？ |
-| 10 | [`docs/raid5_write_path.md`](docs/raid5_write_path.md) | RAID5 写入为什么比读更麻烦？ |
-| 11 | [`docs/write_hole.md`](docs/write_hole.md) | 为什么写到一半断电，会留下 data/parity 不一致的坑？ |
-| 12 | [`docs/rebuild_and_scrub.md`](docs/rebuild_and_scrub.md) | 坏盘重建和巡检 scrub 到底在检查什么？ |
+| 1 | [`docs/raid_basics.md`](docs/raid_basics.md) | RAID 到底想解决什么问题？容量、性能、可靠性怎么取舍？ |
+| 2 | [`docs/raid0_mapping.md`](docs/raid0_mapping.md) | 一笔连续数据，为什么会被切到多块盘上？ |
+| 3 | [`docs/raid1_mirror.md`](docs/raid1_mirror.md) | 为什么“复制一份”能让坏一块盘后继续读？ |
+| 4 | [`docs/raid5_parity.md`](docs/raid5_parity.md) | XOR parity 为什么能在坏一块盘后把数据算回来？ |
+| 5 | [`docs/raid5_write_path.md`](docs/raid5_write_path.md) | RAID5 写入为什么比读更麻烦？ |
+| 6 | [`docs/write_hole.md`](docs/write_hole.md) | 为什么写到一半断电，会留下 data/parity 不一致的坑？ |
+| 7 | [`docs/rebuild_and_scrub.md`](docs/rebuild_and_scrub.md) | 坏盘重建和巡检 scrub 到底在检查什么？ |
 
 看到这里，你只需要形成一个直觉：
 
