@@ -1,0 +1,18 @@
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Verilog/Icarus simulation outputs
+*.vvp
+*.vcd
+
+# Tool/editor noise
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
