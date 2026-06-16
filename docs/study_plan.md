@@ -24,7 +24,8 @@
 | 1 | `README.md` 的“一句话目标”和“项目定位” | 知道本仓库只做前期调研和补课 |
 | 2 | `docs/feynman_learning_path.md` 的核心结论和第 0 关 | 用人话讲出系统为什么存在 |
 | 3 | `docs/00_big_picture.md` | 看到数据面、RAID 层、控制面、NVMe 边界 |
-| 4 | `docs/acceptance_checklist.md` 的核心结论 | 分清 demo、教程、工程验收三者差别 |
+| 4 | `docs/working_modes.md` 的核心结论和“五种工作模式一览” | 知道自检、待机、记录、回放、边记边放分别在系统里干什么 |
+| 5 | `docs/acceptance_checklist.md` 的核心结论 | 分清 demo、教程、工程验收三者差别 |
 
 20 分钟后你应该能说：
 
@@ -43,7 +44,8 @@
 | 3 | `docs/raid_basics.md` | 知道 RAID0/1/5 的基本取舍 |
 | 4 | `docs/raid5_parity.md` | 理解 XOR parity 为什么能恢复单盘故障 |
 | 5 | `docs/axis_axi_lite_basics.md` | 分清 AXIS 数据流和 AXI-Lite 控制台 |
-| 6 | `docs/nvme_host_options.md` | 知道为什么第一阶段不直接实现完整 NVMe Host |
+| 6 | `docs/working_modes.md` | 把五种工作模式看成系统状态机，而不是零散功能点 |
+| 7 | `docs/nvme_host_options.md` | 知道为什么第一阶段不直接实现完整 NVMe Host |
 
 60 分钟后你应该能回答：
 

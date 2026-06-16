@@ -132,13 +132,14 @@ scrub 有没有发现 parity mismatch？
 0. docs/study_plan.md                 # 先按时间和角色选路线
 1. docs/requirements_alignment.md     # 先知道工程目标
 2. docs/00_big_picture.md             # 看整体架构图
-3. docs/raid_basics.md                # 补RAID基本概念
-4. docs/raid5_parity.md               # 搞懂XOR恢复
-5. docs/raid5_write_path.md           # 搞懂RAID5写为什么难
-6. docs/axis_axi_lite_basics.md      # 搞懂数据传送带和控制台
-7. docs/control_plane_registers.md    # 搞懂寄存器、状态、错误注入和重建进度
-8. docs/nvme_host_options.md          # 搞懂真实SSD接入路线和边界
-9. docs/fpga_architecture.md          # 再看FPGA模块怎么拆
-10. labs/level0_python_model/         # 跑demo看现象
-11. rtl/xor_engine 和 rtl/lba_mapper  # 看最小硬件积木
+3. docs/working_modes.md              # 把自检/待机/记录/回放/边记边放看成系统状态机
+4. docs/raid_basics.md                # 补RAID基本概念
+5. docs/raid5_parity.md               # 搞懂XOR恢复
+6. docs/raid5_write_path.md           # 搞懂RAID5写为什么难
+7. docs/axis_axi_lite_basics.md       # 搞懂数据传送带和控制台
+8. docs/control_plane_registers.md    # 搞懂寄存器、状态、错误注入和重建进度
+9. docs/nvme_host_options.md          # 搞懂真实SSD接入路线和边界
+10. docs/fpga_architecture.md         # 再看FPGA模块怎么拆
+11. labs/level0_python_model/         # 跑demo看现象
+12. rtl/xor_engine 和 rtl/lba_mapper  # 看最小硬件积木
 ```

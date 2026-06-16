@@ -74,9 +74,10 @@
 | 3 | [`docs/feynman_learning_path.md`](docs/feynman_learning_path.md) | 如果把系统讲给新人听，应该怎么讲？ |
 | 4 | [`docs/study_plan.md`](docs/study_plan.md) | 按 20/60/120 分钟和不同角色选择学习路线 |
 | 5 | [`docs/00_big_picture.md`](docs/00_big_picture.md) | FPGA RAID/NVMe 固存的整体框架是什么？ |
-| 6 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
-| 7 | [`docs/control_plane_registers.md`](docs/control_plane_registers.md) | 软件如何配置阵列、读取状态、做错误注入和查看重建进度？ |
-| 8 | [`docs/nvme_host_options.md`](docs/nvme_host_options.md) | 真实 NVMe Host 有哪些实现路线，为什么第一阶段先用抽象磁盘端口？ |
+| 6 | [`docs/working_modes.md`](docs/working_modes.md) | 自检、待机、记录、回放、边记边放五种工作模式如何组成系统状态机？ |
+| 7 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
+| 8 | [`docs/control_plane_registers.md`](docs/control_plane_registers.md) | 软件如何配置阵列、读取状态、做错误注入和查看重建进度？ |
+| 9 | [`docs/nvme_host_options.md`](docs/nvme_host_options.md) | 真实 NVMe Host 有哪些实现路线，为什么第一阶段先用抽象磁盘端口？ |
 
 ### 第 2 段：按顺序看 RAID 文档
 
