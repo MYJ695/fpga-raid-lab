@@ -22,10 +22,11 @@
 | 顺序 | 读什么 | 目标 |
 |---:|---|---|
 | 1 | `README.md` 的“一句话目标”和“项目定位” | 知道本仓库只做前期调研和补课 |
-| 2 | `docs/feynman_learning_path.md` 的核心结论和第 0 关 | 用人话讲出系统为什么存在 |
-| 3 | `docs/00_big_picture.md` | 看到数据面、RAID 层、控制面、NVMe 边界 |
-| 4 | `docs/working_modes.md` 的核心结论和“五种工作模式一览” | 知道自检、待机、记录、回放、边记边放分别在系统里干什么 |
-| 5 | `docs/acceptance_checklist.md` 的核心结论 | 分清 demo、教程、工程验收三者差别 |
+| 2 | `docs/requirements_alignment.md` 的核心结论 | 先看技术要求到底在问什么，哪些内容本仓库只做知识地图 |
+| 3 | `docs/feynman_learning_path.md` 的核心结论和第 0 关 | 用人话讲出系统为什么存在 |
+| 4 | `docs/00_big_picture.md` | 看到数据面、RAID 层、控制面、NVMe 边界 |
+| 5 | `docs/working_modes.md` 的核心结论和“五种工作模式一览” | 知道自检、待机、记录、回放、边记边放分别在系统里干什么 |
+| 6 | `docs/acceptance_checklist.md` 的核心结论 | 分清 demo、教程、工程验收三者差别 |
 
 20 分钟后你应该能说：
 
