@@ -118,7 +118,8 @@ RAID概念 -> Python模型 -> 小RTL模块 -> 架构地图
 3. docs/raid_basics.md                # 补RAID基本概念
 4. docs/raid5_parity.md               # 搞懂XOR恢复
 5. docs/raid5_write_path.md           # 搞懂RAID5写为什么难
-6. docs/fpga_architecture.md          # 再看FPGA模块怎么拆
-7. labs/level0_python_model/          # 跑demo看现象
-8. rtl/xor_engine 和 rtl/lba_mapper   # 看最小硬件积木
+6. docs/axis_axi_lite_basics.md      # 搞懂数据传送带和控制台
+7. docs/fpga_architecture.md          # 再看FPGA模块怎么拆
+8. labs/level0_python_model/          # 跑demo看现象
+9. rtl/xor_engine 和 rtl/lba_mapper   # 看最小硬件积木
 ```
