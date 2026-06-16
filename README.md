@@ -50,6 +50,20 @@
 
 详细对齐见：[`docs/requirements_alignment.md`](docs/requirements_alignment.md)，验收视角见：[`docs/acceptance_checklist.md`](docs/acceptance_checklist.md)。
 
+
+## 网页学习模式
+
+如果你主要在 GitHub 网页端阅读，不需要先 clone 仓库，也不需要先运行 Python。
+
+直接从课程目录开始：[`docs/index.md`](docs/index.md)。
+
+推荐用法：
+
+1. 点开目录里的第 1 篇；
+2. 每篇只抓“核心结论”和关键直觉；
+3. 用文末的“上一篇 / 回目录 / 下一篇”连续阅读；
+4. 等概念顺了，再回来看 Python demo 和 RTL 小模块。
+
 ## 先看这里：一眼通关顺序
 
 > 如果你只有 20 分钟、60 分钟或 2 小时，先看 [`docs/study_plan.md`](docs/study_plan.md)。它按时间预算和角色告诉你该读什么、该跳过什么，并提供术语速查。

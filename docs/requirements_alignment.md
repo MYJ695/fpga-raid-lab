@@ -77,4 +77,6 @@ RAID 入门教程
 
 ## 继续阅读
 
-👉 [下一篇：验收清单](acceptance_checklist.md)
+⬅️ 上一篇：无，这是第 1 篇  
+🏠 [回到网页学习目录](index.md)  
+➡️ [下一篇：验收清单](acceptance_checklist.md)

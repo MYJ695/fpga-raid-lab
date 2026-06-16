@@ -124,4 +124,6 @@
 
 ## 继续阅读
 
-👉 [下一篇：AXIS / AXI-Lite 基础](axis_axi_lite_basics.md)
+⬅️ [上一篇：系统大图](00_big_picture.md)  
+🏠 [回到网页学习目录](index.md)  
+➡️ [下一篇：AXIS / AXI-Lite 基础](axis_axi_lite_basics.md)

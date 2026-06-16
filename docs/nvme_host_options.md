@@ -227,4 +227,6 @@ NVMe Host 是怎么安全高效地和真实 SSD 说话。
 
 ## 继续阅读
 
-👉 [下一篇：RAID 基础](raid_basics.md)
+⬅️ [上一篇：控制寄存器](control_plane_registers.md)  
+🏠 [回到网页学习目录](index.md)  
+➡️ [下一篇：RAID 基础](raid_basics.md)

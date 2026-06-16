@@ -190,4 +190,6 @@ rebuild_D1 = P XOR D0 XOR D2 = 0xcc
 
 ## 继续阅读
 
-👉 [回到 README 学习入口](../README.md)
+⬅️ [上一篇：Write Hole](write_hole.md)  
+🏠 [回到网页学习目录](index.md)  
+➡️ 下一篇：无，已完成主线阅读

@@ -126,4 +126,6 @@
 
 ## 继续阅读
 
-👉 [下一篇：费曼学习路线](feynman_learning_path.md)
+⬅️ [上一篇：需求对齐](requirements_alignment.md)  
+🏠 [回到网页学习目录](index.md)  
+➡️ [下一篇：费曼学习路线](feynman_learning_path.md)

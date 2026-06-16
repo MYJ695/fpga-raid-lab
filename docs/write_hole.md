@@ -229,4 +229,6 @@ python -m pytest -q labs/level0_python_model
 
 ## 继续阅读
 
-👉 [下一篇：Rebuild 和 Scrub](rebuild_and_scrub.md)
+⬅️ [上一篇：RAID5 写路径](raid5_write_path.md)  
+🏠 [回到网页学习目录](index.md)  
+➡️ [下一篇：Rebuild 和 Scrub](rebuild_and_scrub.md)

@@ -148,4 +148,6 @@ scrub 有没有发现 parity mismatch？
 
 ## 继续阅读
 
-👉 [下一篇：学习计划](study_plan.md)
+⬅️ [上一篇：验收清单](acceptance_checklist.md)  
+🏠 [回到网页学习目录](index.md)  
+➡️ [下一篇：学习计划](study_plan.md)

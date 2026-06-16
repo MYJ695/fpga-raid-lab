@@ -121,4 +121,6 @@ virtual disk3 = bytearray()
 
 ## 继续阅读
 
-👉 [下一篇：工作模式](working_modes.md)
+⬅️ [上一篇：学习计划](study_plan.md)  
+🏠 [回到网页学习目录](index.md)  
+➡️ [下一篇：工作模式](working_modes.md)
