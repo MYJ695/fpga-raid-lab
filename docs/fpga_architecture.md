@@ -14,7 +14,7 @@
   -> 更大的 read/write/rebuild/scrub 控制器
 ```
 
-这页只定义早期架构边界，不承诺真实 NVMe、PCIe、板级约束或 40 Gbps 性能。
+这页只定义早期架构边界，不承诺真实 NVMe、PCIe、板级约束或 40 Gbps 性能。真实 SSD 接入路线见 [`nvme_host_options.md`](nvme_host_options.md)。
 
 继续拆模块前，建议先读 [`axis_axi_lite_basics.md`](axis_axi_lite_basics.md)：它把 AXIS 解释成“数据传送带”，把 AXI-Lite 解释成“控制台”，能避免把高速数据路径和管理寄存器混成一个大黑盒。
 
@@ -60,7 +60,8 @@
 
 - 知道 NVMe Host 是独立复杂模块；
 - 知道 RAID 层最好先和“抽象磁盘端口”对接；
-- 暂不自己实现完整 NVMe/PCIe 协议栈。
+- 暂不自己实现完整 NVMe/PCIe 协议栈；
+- 先阅读 [`nvme_host_options.md`](nvme_host_options.md)，理解厂商 IP、开源 Host、SoC 协同、DMA 模拟和 DDR/BRAM 模型的取舍。
 
 ## 最小学习数据路径
 

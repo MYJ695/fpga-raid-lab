@@ -100,7 +100,7 @@ RAID概念 -> Python模型 -> 小RTL模块 -> 架构地图
 
 离工程样机还差：
 
-- NVMe Host 协议栈；
+- NVMe Host 协议栈（路线取舍见 `docs/nvme_host_options.md`）；
 - PCIe Gen3 x4 接入；
 - 8 路 AXIS 汇聚和背压；
 - DDR/缓存/队列调度；
@@ -119,7 +119,8 @@ RAID概念 -> Python模型 -> 小RTL模块 -> 架构地图
 4. docs/raid5_parity.md               # 搞懂XOR恢复
 5. docs/raid5_write_path.md           # 搞懂RAID5写为什么难
 6. docs/axis_axi_lite_basics.md      # 搞懂数据传送带和控制台
-7. docs/fpga_architecture.md          # 再看FPGA模块怎么拆
-8. labs/level0_python_model/          # 跑demo看现象
-9. rtl/xor_engine 和 rtl/lba_mapper   # 看最小硬件积木
+7. docs/nvme_host_options.md          # 搞懂真实SSD接入路线和边界
+8. docs/fpga_architecture.md          # 再看FPGA模块怎么拆
+9. labs/level0_python_model/          # 跑demo看现象
+10. rtl/xor_engine 和 rtl/lba_mapper  # 看最小硬件积木
 ```
