@@ -126,7 +126,10 @@ scrub 有没有发现 parity mismatch？
 
 ## 推荐学习顺序
 
+如果你时间有限，先用 `docs/study_plan.md` 选择 20 分钟、60 分钟或 2 小时路线；下面是完整顺序。
+
 ```text
+0. docs/study_plan.md                 # 先按时间和角色选路线
 1. docs/requirements_alignment.md     # 先知道工程目标
 2. docs/00_big_picture.md             # 看整体架构图
 3. docs/raid_basics.md                # 补RAID基本概念

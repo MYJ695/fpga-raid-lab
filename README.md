@@ -52,6 +52,10 @@
 
 ## 先看这里：一眼通关顺序
 
+
+> 如果你只有 20 分钟、60 分钟或 2 小时，先看 [`docs/study_plan.md`](docs/study_plan.md)。它按时间预算和角色告诉你该读什么、该跳过什么，并提供术语速查。
+
+
 如果你第一次打开这个仓库，不要从文件树里乱点。
 
 按下面 4 段走就行：
@@ -70,6 +74,7 @@
 | 1 | [`docs/requirements_alignment.md`](docs/requirements_alignment.md) | 技术要求到底要什么？哪些是本仓库能覆盖的前期知识？ |
 | 2 | [`docs/acceptance_checklist.md`](docs/acceptance_checklist.md) | 技术要求里的验收项，如何翻译成教程自测和后续工程证据？ |
 | 3 | [`docs/feynman_learning_path.md`](docs/feynman_learning_path.md) | 如果把系统讲给新人听，应该怎么讲？ |
+| 4 | [`docs/study_plan.md`](docs/study_plan.md) | 按 20/60/120 分钟和不同角色选择学习路线 |
 | 4 | [`docs/00_big_picture.md`](docs/00_big_picture.md) | FPGA RAID/NVMe 固存的整体框架是什么？ |
 | 5 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
 | 6 | [`docs/control_plane_registers.md`](docs/control_plane_registers.md) | 软件如何配置阵列、读取状态、做错误注入和查看重建进度？ |
