@@ -135,3 +135,9 @@ python -m pytest -q labs/level0_python_model
 - 测试里的 RAID0 坏盘用例是否符合“映射到坏盘的 LBA 不可读”。
 
 下一关建议看 `docs/raid1_mirror.md`：RAID1 会用更贵的容量换来简单可靠的镜像读取。
+
+---
+
+## 继续阅读
+
+👉 [下一篇：RAID1 镜像](raid1_mirror.md)

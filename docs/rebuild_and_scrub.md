@@ -185,3 +185,9 @@ rebuild_D1 = P XOR D0 XOR D2 = 0xcc
 这就是本关要抓住的直觉：**scrub 尽量在坏盘前发现 mismatch；rebuild 则会在坏盘后依赖幸存块，可能把 mismatch 变成错误恢复数据。**
 
 下一步可以把这个过程拆成 RTL 状态机：先做 XOR engine，再做按 stripe 循环读、比较和上报。
+
+---
+
+## 继续阅读
+
+👉 [回到 README 学习入口](../README.md)

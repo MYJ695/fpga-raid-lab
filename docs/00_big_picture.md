@@ -116,3 +116,9 @@ virtual disk3 = bytearray()
 ```
 
 先证明 RAID 算法和映射逻辑是对的，再逐步讨论 AXIS、AXI-Lite、NVMe 和板级工程。
+
+---
+
+## 继续阅读
+
+👉 [下一篇：工作模式](working_modes.md)

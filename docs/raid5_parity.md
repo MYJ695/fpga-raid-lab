@@ -228,3 +228,9 @@ python -m pytest -q labs/level0_python_model
 - 测试里的 RAID5 单盘故障读、坏盘重建是否符合“只坏一块可以 XOR 回来”。
 
 下一关建议看 `docs/raid5_write_path.md`：RAID5 最麻烦的不是会不会 XOR，而是 partial write 时怎么避免 write hole。
+
+---
+
+## 继续阅读
+
+👉 [下一篇：RAID5 写路径](raid5_write_path.md)

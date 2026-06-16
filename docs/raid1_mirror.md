@@ -184,3 +184,9 @@ python -m pytest -q labs/level0_python_model
 - demo 里的 RAID1 是否展示同一 LBA 在两块盘上都有副本；
 - 测试里的 RAID1 单盘故障后是否仍能读回数据；
 - `raid_model.py` 里的 `RAID1.write()` 和 `RAID1.read()` 是否正好对应“写入扇出、读取健康盘”。
+
+---
+
+## 继续阅读
+
+👉 [下一篇：RAID5 校验](raid5_parity.md)

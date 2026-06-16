@@ -143,3 +143,9 @@ scrub 有没有发现 parity mismatch？
 11. labs/level0_python_model/         # 跑demo看现象
 12. rtl/xor_engine 和 rtl/lba_mapper  # 看最小硬件积木
 ```
+
+---
+
+## 继续阅读
+
+👉 [下一篇：学习计划](study_plan.md)

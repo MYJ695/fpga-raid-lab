@@ -287,3 +287,9 @@ python -m pytest -q labs/level0_python_model
 ```
 
 当前 Python 模型只实现 `write_full_stripe()`，没有实现 partial write。这样设计是刻意的：先把 RAID5 parity 的正确性跑通，再单独学习 RMW、reconstruct write 和 write hole。
+
+---
+
+## 继续阅读
+
+👉 [下一篇：Write Hole](write_hole.md)

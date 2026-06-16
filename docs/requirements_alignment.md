@@ -72,3 +72,9 @@ RAID 入门教程
 4. 为什么 RAID5 小写比 full-stripe write 麻烦？
 5. 为什么工程样机还需要 AXI-Lite 寄存器、状态遥测和错误注入？
 6. 为什么 NVMe Host 是独立的大工程，不能和 RAID 入门混在一起一口吃掉？
+
+---
+
+## 继续阅读
+
+👉 [下一篇：验收清单](acceptance_checklist.md)

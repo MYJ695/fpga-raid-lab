@@ -224,3 +224,9 @@ python -m pytest -q labs/level0_python_model
 ```
 
 `demo_write_hole.py` 会把上面的手算变成可运行输出：正常读直接读 data block，看起来可能没坏；一旦 disk2 缺失，恢复路径只能拿其它 data 和 parity XOR，于是 mismatch 立刻变成错误数据。
+
+---
+
+## 继续阅读
+
+👉 [下一篇：Rebuild 和 Scrub](rebuild_and_scrub.md)

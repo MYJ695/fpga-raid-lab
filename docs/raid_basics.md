@@ -121,3 +121,9 @@ python -m pytest -q labs/level0_python_model
 - Linux MD RAID 的完整元数据和恢复策略。
 
 这些会在后续关卡逐步补上。
+
+---
+
+## 继续阅读
+
+👉 [下一篇：RAID0 映射](raid0_mapping.md)
