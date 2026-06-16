@@ -85,6 +85,8 @@
 |---|---|---|
 | AXIS | 高速数据传送带，valid/ready 决定这拍能不能交货 | `docs/axis_axi_lite_basics.md` |
 | AXI-Lite | 慢速控制台，软件通过寄存器配置和查看硬件 | `docs/axis_axi_lite_basics.md`、`docs/control_plane_registers.md` |
+| 工作模式 | 固存样机当前处在自检、待机、记录、回放还是边记边放；它决定数据面和控制面该做什么 | `docs/working_modes.md` |
+| 边记边放 | 一边写入新载荷、一边回放旧数据，是最容易暴露缓存、仲裁、背压和死锁风险的模式 | `docs/working_modes.md` |
 | NVMe Host | 会和真实 NVMe SSD 说话的主机侧协议/IP/软件栈 | `docs/nvme_host_options.md` |
 | PCIe Gen3 x4 | NVMe SSD 常用高速通道规格之一，不等于已经有完整存储系统 | `docs/nvme_host_options.md` |
 | RAID0 | 把数据分条写到多块盘，追求吞吐，但坏一块就丢对应数据 | `docs/raid0_mapping.md` |
@@ -96,7 +98,7 @@
 | write hole | 数据和 parity 写到一半断电，二者不再匹配的坑 | `docs/write_hole.md` |
 | abstract disk port | 先把 SSD 抽象成读写块接口，避免一开始陷入 NVMe/PCIe 复杂度 | `docs/nvme_host_options.md` |
 | IRQ/W1C | 中断状态用来通知事件；W1C 表示写 1 清除对应状态位 | `docs/control_plane_registers.md` |
-| telemetry | 工程运行时的状态、计数、进度和错误记录 | `docs/control_plane_registers.md` |
+| telemetry / 遥测与事件信息 | 工程运行时的状态、计数、进度、错误记录和关键事件，是验收时追踪“系统发生过什么”的证据 | `docs/control_plane_registers.md`、`docs/working_modes.md` |
 
 ## demo 和 RTL runner 到底看什么
 
@@ -112,12 +114,14 @@
 
 ## 最后自测
 
-读完你可以用 5 句话自测：
+读完你可以用 7 个问题自测：
 
 1. 这个仓库为什么不直接写完整 NVMe Host？
 2. RAID0、RAID1、RAID5 分别用什么换什么？
-3. AXIS 和 AXI-Lite 在系统里各管什么？
-4. rebuild、scrub、write hole 为什么会进入验收讨论？
-5. Python demo、RTL runner、工程样机验收三者的证据边界分别是什么？
+3. 自检、待机、记录、回放、边记边放分别解决什么系统运行问题？
+4. 为什么边记边放最容易暴露缓存、仲裁、背压和死锁风险？
+5. AXIS 和 AXI-Lite 在系统里各管什么？
+6. rebuild、scrub、write hole 为什么会进入验收讨论？
+7. Python demo、RTL runner、工程样机验收三者的证据边界分别是什么？
 
 能答出来，就说明你已经完成本仓库的第一阶段目标：不是会写所有代码，而是有资格提出正确的工程问题。
