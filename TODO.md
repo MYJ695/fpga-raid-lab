@@ -44,6 +44,7 @@
 
 - [x] 补 `docs/axis_axi_lite_basics.md`：解释 AXIS/AXI-Lite 在样机里的角色
 - [x] 补 `docs/nvme_host_options.md`：调研 NVMe Host 的实现路线和风险
+- [x] 补 `docs/acceptance_checklist.md`：把验收项翻译成教程自测和后续工程证据
 - [ ] 补 `docs/control_plane_registers.md`：列出模式、成员盘、错误注入、重建进度寄存器草案
 - [ ] 扩展 `rtl/lba_mapper`：加入 RAID5 parity rotation / data slot 映射
 - [ ] 实现 `rtl/stripe_manager`：full-stripe write -> per-disk DATA/PARITY action
@@ -54,4 +55,4 @@
 - [ ] 块大小是否长期用 4 字节演示，还是切到 512B/4KiB 更接近真实盘？
 - [x] RTL 第一阶段先用 Verilog-2001 + Icarus Verilog；SystemVerilog 留到接口复杂后再评估。
 - [x] 真实 NVMe 接入倾向自研、厂商 IP、开源参考，还是 SoC/CPU 协同？先完成路线对比，工程选型待板卡/IP/预算确认。
-- [ ] 工程样机教程是否需要单独建立“验收清单”文档？
+- [x] 工程样机教程是否需要单独建立“验收清单”文档？已新增 `docs/acceptance_checklist.md`。

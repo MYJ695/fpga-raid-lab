@@ -48,7 +48,7 @@
 | 控制管理 | AXI-Lite、状态、错误计数、重建进度 | 先列为控制面学习主题 |
 | 验收 | 功能、性能、稳定性、异常恢复、资料一致 | 先解释验收含义，不冒充工程交付 |
 
-详细对齐见：[`docs/requirements_alignment.md`](docs/requirements_alignment.md)。
+详细对齐见：[`docs/requirements_alignment.md`](docs/requirements_alignment.md)，验收视角见：[`docs/acceptance_checklist.md`](docs/acceptance_checklist.md)。
 
 ## 先看这里：一眼通关顺序
 
@@ -68,10 +68,11 @@
 | 顺序 | 文件 | 你要搞懂的问题 |
 |---:|---|---|
 | 1 | [`docs/requirements_alignment.md`](docs/requirements_alignment.md) | 技术要求到底要什么？哪些是本仓库能覆盖的前期知识？ |
-| 2 | [`docs/feynman_learning_path.md`](docs/feynman_learning_path.md) | 如果把系统讲给新人听，应该怎么讲？ |
-| 3 | [`docs/00_big_picture.md`](docs/00_big_picture.md) | FPGA RAID/NVMe 固存的整体框架是什么？ |
-| 4 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
-| 5 | [`docs/nvme_host_options.md`](docs/nvme_host_options.md) | 真实 NVMe Host 有哪些实现路线，为什么第一阶段先用抽象磁盘端口？ |
+| 2 | [`docs/acceptance_checklist.md`](docs/acceptance_checklist.md) | 技术要求里的验收项，如何翻译成教程自测和后续工程证据？ |
+| 3 | [`docs/feynman_learning_path.md`](docs/feynman_learning_path.md) | 如果把系统讲给新人听，应该怎么讲？ |
+| 4 | [`docs/00_big_picture.md`](docs/00_big_picture.md) | FPGA RAID/NVMe 固存的整体框架是什么？ |
+| 5 | [`docs/axis_axi_lite_basics.md`](docs/axis_axi_lite_basics.md) | AXIS 数据传送带和 AXI-Lite 控制台分别管什么？ |
+| 6 | [`docs/nvme_host_options.md`](docs/nvme_host_options.md) | 真实 NVMe Host 有哪些实现路线，为什么第一阶段先用抽象磁盘端口？ |
 
 ### 第 2 段：按顺序看 RAID 文档
 
@@ -127,6 +128,19 @@ python rtl/lba_mapper/run_tests.py
 | 2 | `python rtl/lba_mapper/run_tests.py` | RAID0 的 LBA 映射能不能翻译成组合逻辑 |
 
 如果本机没有 Icarus Verilog，runner 会提示缺少 `iverilog`。这不是教程失败，而是外部仿真工具未安装。
+
+## 读完你应该能回答什么
+
+完成第一阶段后，你不需要会交付完整 NVMe RAID 样机，但应该能说清：
+
+1. 技术要求为什么不只是“写一个 RAID5 XOR 模块”；
+2. RAID0/RAID1/RAID5 分别牺牲什么、换来什么；
+3. 8 路 AXIS、AXI-Lite 控制面、NVMe Host 分别属于哪一层；
+4. 为什么第一阶段推荐 `abstract disk port`，而不是直接绑定真实 NVMe IP；
+5. Python/RTL 小实验能证明什么，不能证明哪些 20/40Gbps 和 72 小时验收项；
+6. 真正工程交付还需要哪些板级、接口、稳定性和资料证据。
+
+更详细的自测题和证据边界见：[`docs/acceptance_checklist.md`](docs/acceptance_checklist.md)。
 
 ## 当前路线图
 
