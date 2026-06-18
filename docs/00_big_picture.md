@@ -1,16 +1,14 @@
 # 00 - 一张图看懂星载 NVMe RAID 固存
 
-## 核心结论
+## 先抓住这句话
 
 这套系统不是“写一个 XOR 模块”，而是让 FPGA 做一个高速数据仓库的调度员：
-
 ```text
 多路载荷数据进来，要被分流、排队、校验、写入多块 NVMe SSD；
 同时还要能监控状态、处理掉盘、控制重建、支持验收测试。
 ```
 
 ## 整体视角
-
 ```text
 8x Payload Streams
 AXIS 64-bit, valid/ready
@@ -81,7 +79,7 @@ SSD0  SSD1  SSD2  SSD3  SSD4  SSD5 ...
 
 关键词：NVMe 1.2/1.3、PCIe Gen3 x4、namespace、admin command、I/O queue、SMART/health log。
 
-本仓库第一阶段重点在 **RAID 面 + 少量数据面/控制面概念**。NVMe Host 是后续独立大课题。
+这个仓库第一阶段重点在 **RAID 面 + 少量数据面/控制面概念**。NVMe Host 是后面独立大课题。
 
 ## FPGA 值得先做什么
 
@@ -107,7 +105,6 @@ SSD0  SSD1  SSD2  SSD3  SSD4  SSD5 ...
 我们先不用真实 SSD。
 
 用 Python/BRAM/仿真模型代表多块盘：
-
 ```text
 virtual disk0 = bytearray()
 virtual disk1 = bytearray()
@@ -121,6 +118,6 @@ virtual disk3 = bytearray()
 
 ## 继续阅读
 
-⬅️ [上一篇：学习计划](study_plan.md)  
-🏠 [回到网页学习目录](index.md)  
+⬅️ [上一篇：学习计划](study_plan.md)<br>
+🏠 [回到课程目录](index.md)<br>
 ➡️ [下一篇：工作模式](working_modes.md)

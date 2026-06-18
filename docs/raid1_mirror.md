@@ -1,8 +1,8 @@
 # RAID1 Mirror - 数据的影分身
 
-## 核心结论
+## 先抓住这句话
 
-RAID1 的核心只有一句话：**同一份逻辑数据，写到每一块镜像盘**。
+RAID1 的核心只有一句话记住：**同一份逻辑数据，写到每一块镜像盘**。
 
 它和 RAID0 的性格刚好相反：
 
@@ -27,7 +27,6 @@ RAID1 的核心只有一句话：**同一份逻辑数据，写到每一块镜像
 | 3 | block3 = data3 | block3 = data3 |
 
 布局图：
-
 ```text
           LBA0    LBA1    LBA2    LBA3
 disk0     data0   data1   data2   data3
@@ -39,7 +38,6 @@ disk1     data0   data1   data2   data3
 ## 写路径：一次 host write，变成多次 member write
 
 host 写入一个 LBA 时，RAID1 必须把同一份数据写到所有镜像成员盘。
-
 ```text
 host write LBA2 = data2
         |
@@ -53,8 +51,7 @@ disk0:LBA2    disk1:LBA2
 =data2        =data2
 ```
 
-在当前 Python 模型里，对应代码是 `RAID1.write()`：
-
+在现在 Python 模型里，对应代码是 `RAID1.write()`：
 ```python
 def write(self, lba: int, data: bytes) -> None:
     self._check_lba(lba)
@@ -71,7 +68,6 @@ def write(self, lba: int, data: bytes) -> None:
 ## 读路径：找一块健康盘读
 
 读的时候，RAID1 不需要每次都读所有盘。只要某块镜像盘健康，就可以从它读出数据。
-
 ```text
 host read LBA2
         |
@@ -85,7 +81,6 @@ disk0:LBA2 -> data2
 ```
 
 如果 `disk0` 坏了：
-
 ```text
 host read LBA2
         |
@@ -96,8 +91,7 @@ skip disk0, choose disk1
 disk1:LBA2 -> data2
 ```
 
-当前 Python 模型对应 `RAID1.read()`：
-
+现在 Python 模型对应 `RAID1.read()`：
 ```python
 def read(self, lba: int) -> bytes:
     self._check_lba(lba)
@@ -107,7 +101,7 @@ def read(self, lba: int) -> bytes:
     raise DiskFailedError("all RAID1 mirrors are failed")
 ```
 
-这段代码表达了 RAID1 的最小生存规则：**只要至少一块镜像盘还活着，读就能继续**。
+这段代码表达了 RAID1 的最小生存规则：**只要起码一块镜像盘还活着，读就能继续**。
 
 ## 故障表：坏一块盘会发生什么？
 
@@ -125,14 +119,12 @@ def read(self, lba: int) -> bytes:
 ## 容量代价：安全感不是免费的
 
 RAID1 的容量不是成员盘容量相加，而是取决于最小成员盘。
-
 ```text
 2 块 1 TB 盘做 RAID1：可用容量约 1 TB
 3 块 1 TB 盘做 RAID1：可用容量仍约 1 TB，但副本更多
 ```
 
-在当前模型里：
-
+在现在模型里：
 ```python
 self.capacity_blocks = min(d.block_count for d in disks)
 ```
@@ -142,7 +134,6 @@ self.capacity_blocks = min(d.block_count for d in disks)
 ## FPGA 视角：RAID1 会变成什么硬件逻辑？
 
 最小 RAID1 控制逻辑可以拆成两条路径：
-
 ```text
 write path:
   host_valid + host_lba + host_data
@@ -168,12 +159,11 @@ RAID1 的可靠性来自“完整副本”，RAID5 的可靠性来自“数据 +
 | RAID1 | 完整复制 | 低 | 从另一份副本读 |
 | RAID5 | XOR parity | 较高 | 用剩余数据和 parity 算回来 |
 
-下一关建议看 `docs/raid5_parity.md`：它会解释为什么 `A XOR B XOR parity` 可以把坏掉的一块数据算回来。
+下一关建议看 `docs/raid5_parity.md`：它会解释为什么 `A XOR B XOR parity` 你可以把坏掉的一块数据算回来。
 
-## 动手检查
+## 如果你想动手验证
 
 从仓库根目录运行：
-
 ```bash
 python labs/level0_python_model/demo_layout.py
 python -m pytest -q labs/level0_python_model
@@ -189,6 +179,6 @@ python -m pytest -q labs/level0_python_model
 
 ## 继续阅读
 
-⬅️ [上一篇：RAID0 映射](raid0_mapping.md)  
-🏠 [回到网页学习目录](index.md)  
+⬅️ [上一篇：RAID0 映射](raid0_mapping.md)<br>
+🏠 [回到课程目录](index.md)<br>
 ➡️ [下一篇：RAID5 校验](raid5_parity.md)

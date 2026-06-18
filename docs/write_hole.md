@@ -1,6 +1,6 @@
 # RAID5 Write Hole - 最危险的是“看起来没坏”
 
-## 核心结论
+## 先抓住这句话
 
 RAID5 的 write hole 不是“XOR 算错了”，而是：**partial write 需要分别写 data 和 parity，只要中途掉电、复位或控制器失联，就可能留下一个 data/parity 不一致的 stripe**。
 
@@ -10,7 +10,7 @@ RAID5 的 write hole 不是“XOR 算错了”，而是：**partial write 需要
 2. parity 却可能已经不再匹配这个 stripe；
 3. 等到将来某块盘坏了，degraded read 或 rebuild 依赖 parity 恢复数据时，错误才爆出来。
 
-一句话：**write hole 是 RAID5 partial write 的一致性窗口，不是每次 partial write 必然损坏。**
+一句话记住：**write hole 是 RAID5 partial write 的一致性窗口，不是每次 partial write 必然损坏。**
 
 上一关 `raid5_write_path.md` 讲了 RMW / reconstruct write 为什么要同时改 data 和 parity。本页只盯住一个问题：如果这两个写入没有一起完成，会发生什么？
 
@@ -23,7 +23,6 @@ RAID5 的 write hole 不是“XOR 算错了”，而是：**partial write 需要
 | P | D0 | D1 | D2 |
 
 旧状态：
-
 ```text
 D0 = 0xaa
 D1 = 0xcc
@@ -34,7 +33,6 @@ P  = D0 XOR D1 XOR D2 = 0x66
 现在主机只想把 `D1` 从 `0xcc` 改成 `0x0f`。
 
 正确的新 parity 应该是：
-
 ```text
 new_P = D0 XOR new_D1 XOR D2
       = 0xaa XOR 0x0f XOR 0x00
@@ -42,7 +40,6 @@ new_P = D0 XOR new_D1 XOR D2
 ```
 
 也可以用 RMW delta 算：
-
 ```text
 new_P = old_P XOR old_D1 XOR new_D1
       = 0x66 XOR 0xcc XOR 0x0f
@@ -63,7 +60,6 @@ new_P = old_P XOR old_D1 XOR new_D1
 这一坑的状态可以直译成：**data 已写新值、parity 仍是旧值**。
 
 假设控制器先写 data，再写 parity：
-
 ```text
 write D1 <- 0x0f   # 成功
 write P  <- 0xa5   # 还没写，掉电了
@@ -81,7 +77,6 @@ write P  <- 0xa5   # 还没写，掉电了
 这时正常读 `D1`，会读到 `0x0f`，用户可能觉得写入成功了。
 
 但如果之后 `disk1` 坏了，系统要用 `D0 XOR D2 XOR P` 恢复 D1：
-
 ```text
 recovered_D1 = D0 XOR D2 XOR P
              = 0xaa XOR 0x00 XOR 0x66
@@ -97,7 +92,6 @@ recovered_D1 = D0 XOR D2 XOR P
 这一坑的状态可以直译成：**parity 已写新值、data 仍是旧值**。
 
 再反过来，假设控制器先写 parity，再写 data：
-
 ```text
 write P  <- 0xa5   # 成功
 write D1 <- 0x0f   # 还没写，掉电了
@@ -115,7 +109,6 @@ write D1 <- 0x0f   # 还没写，掉电了
 这时正常读 `D1`，会读到旧值 `0xcc`。如果上层文件系统或应用以为写入已经完成，就会出一致性问题。
 
 如果之后 `disk1` 坏了，系统用 parity 恢复 D1：
-
 ```text
 recovered_D1 = D0 XOR D2 XOR P
              = 0xaa XOR 0x00 XOR 0xa5
@@ -140,7 +133,6 @@ recovered_D1 = D0 XOR D2 XOR P
 full-stripe write 不需要读旧 data/parity，但它仍然会写多个 data block 和一个 parity block。只要这些成员盘写入不能被当作一个原子事务，就仍然需要考虑掉电恢复。
 
 不过 partial write 更容易暴露这个问题，因为它必须先基于旧状态算新 parity：
-
 ```text
 读 old data / old parity
 算 new parity
@@ -154,13 +146,11 @@ full-stripe write 不需要读旧 data/parity，但它仍然会写多个 data bl
 因为 RAID5 正常读一个没有故障的数据块时，通常直接读对应 data disk，不会每次都重新 XOR parity 验算。
 
 也就是说：
-
 ```text
 normal read D1 -> read disk2/blockX
 ```
 
 而不是：
-
 ```text
 normal read D1 -> read D0, D2, P -> XOR check
 ```
@@ -185,7 +175,7 @@ normal read D1 -> read D0, D2, P -> XOR check
 
 ## 常见缓解思路，只先记名字
 
-本项目还没实现这些机制，本页只把路标放出来：
+这个项目还没实现这些机制，本页只把路标放出来：
 
 | 机制 | 直觉 | 代价 |
 |---|---|---|
@@ -197,13 +187,13 @@ normal read D1 -> read D0, D2, P -> XOR check
 
 下一关 `rebuild_and_scrub.md` 会继续讲：坏盘后怎么读、怎么重建、为什么 scrub 能把“潜伏错误”提前暴露。
 
-## 手算小练习
+## 自己算一遍
 
 1. `D0=0xaa, old_D1=0xcc, D2=0x00, old_P=0x66, new_D1=0x0f`，正确的 `new_P` 是多少？
 2. 如果 data 已写成 `0x0f`，parity 仍是 `0x66`，`disk2` 坏了以后恢复出的 D1 是多少？
 3. 如果 parity 已写成 `0xa5`，data 仍是 `0xcc`，正常读 D1 会看到多少？恢复读又会算出多少？
 4. 为什么“正常读没报错”不代表 parity 一定正确？
-5. 对 FPGA RAID 控制器来说，write completion tracker 要证明什么？
+5. 放到 FPGA RAID 控制器里看，write completion tracker 要证明什么？
 
 参考答案：
 
@@ -213,10 +203,9 @@ normal read D1 -> read D0, D2, P -> XOR check
 4. 因为正常读通常直接读 data disk，不会每次读出整个 stripe 重新 XOR parity；
 5. 要证明 data/parity 这组写要么都完成并可认为 committed，要么恢复流程知道它处在可疑/未完成状态。
 
-## 动手检查
+## 如果你想动手验证
 
 从仓库根目录运行：
-
 ```bash
 python labs/level0_python_model/demo_layout.py
 python labs/level0_python_model/demo_write_hole.py
@@ -229,6 +218,6 @@ python -m pytest -q labs/level0_python_model
 
 ## 继续阅读
 
-⬅️ [上一篇：RAID5 写路径](raid5_write_path.md)  
-🏠 [回到网页学习目录](index.md)  
+⬅️ [上一篇：RAID5 写路径](raid5_write_path.md)<br>
+🏠 [回到课程目录](index.md)<br>
 ➡️ [下一篇：Rebuild 和 Scrub](rebuild_and_scrub.md)

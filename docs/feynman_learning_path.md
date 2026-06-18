@@ -1,8 +1,8 @@
 # 费曼学习路径 - 把星载 NVMe RAID 固存讲给新人听
 
-## 核心结论
+## 先抓住这句话
 
-先别背协议名。把系统想成一句话：
+先别背协议名。把系统想成一句话记住：
 
 > 卫星载荷不断产生数据，FPGA 像仓库调度员，把数据分给多块 NVMe SSD；RAID 负责“放得快、坏一块还能找回来”；控制面负责“状态看得见、故障管得住”。
 
@@ -15,7 +15,6 @@
 一台相机一直拍照，数据来得太快，一块硬盘来不及写。
 
 办法是找很多块硬盘一起干活：
-
 ```text
 一块盘：一个人搬箱子，慢
 多块盘：一队人分头搬，快
@@ -42,7 +41,6 @@ RAID：队长规定每个箱子放哪、坏一个人时怎么补救
 | RAID5 | 数据分散放，再放 XOR 校验 | 容量和可靠性折中 | 写入和重建更复杂 |
 
 先跑：
-
 ```bash
 python labs/level0_python_model/demo_layout.py
 ```
@@ -52,7 +50,6 @@ python labs/level0_python_model/demo_layout.py
 ## 第 2 关：为什么 RAID5 的 XOR 能救数据
 
 费曼解释：
-
 ```text
 A XOR B XOR C = P
 如果 B 丢了：B = A XOR C XOR P
@@ -61,7 +58,6 @@ A XOR B XOR C = P
 这就像三个人的账和总校验都记着，丢一个人的账，可以用其他账倒推回来。
 
 先跑：
-
 ```bash
 python labs/level0_python_model/demo_rebuild_and_scrub.py
 ```
@@ -71,7 +67,6 @@ python labs/level0_python_model/demo_rebuild_and_scrub.py
 ## 第 3 关：为什么工程样机不只是 RAID
 
 技术要求里最容易让新人低估的是：RAID 只是中间一层。
-
 ```text
 8路输入AXIS
    -> 流量控制/缓存/仲裁
@@ -92,8 +87,7 @@ AXI-Lite寄存器
 
 ## 第 4 关：从教程到工程的距离
 
-本仓库当前只覆盖最前面的学习闭环：
-
+这个仓库现在只覆盖最前面的学习闭环：
 ```text
 RAID概念 -> Python模型 -> 小RTL模块 -> 架构地图
 ```
@@ -113,7 +107,6 @@ RAID概念 -> Python模型 -> 小RTL模块 -> 架构地图
 ## 第 5 关：补上控制面，不然系统不可验收
 
 很多新人会先盯着 RAID 数据怎么写，其实验收时还会追问另一类问题：
-
 ```text
 现在是哪种 RAID 模式？
 哪块 SSD 降级了？
@@ -127,7 +120,6 @@ scrub 有没有发现 parity mismatch？
 ## 推荐学习顺序
 
 如果你时间有限，先用 `docs/study_plan.md` 选择 20 分钟、60 分钟或 2 小时路线；下面是完整顺序。
-
 ```text
 0. docs/study_plan.md                 # 先按时间和角色选路线
 1. docs/requirements_alignment.md     # 先知道工程目标
@@ -148,6 +140,6 @@ scrub 有没有发现 parity mismatch？
 
 ## 继续阅读
 
-⬅️ [上一篇：验收清单](acceptance_checklist.md)  
-🏠 [回到网页学习目录](index.md)  
+⬅️ [上一篇：验收清单](acceptance_checklist.md)<br>
+🏠 [回到课程目录](index.md)<br>
 ➡️ [下一篇：学习计划](study_plan.md)

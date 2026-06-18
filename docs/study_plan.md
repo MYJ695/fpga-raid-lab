@@ -1,11 +1,10 @@
 # 学习计划 - 按时间和角色读懂 FPGA RAID Lab
 
-## 核心结论
+## 先抓住这句话
 
 这个仓库不是让你一口气写出 NVMe RAID 样机，而是先把工程地图看懂。
 
-用费曼法说：
-
+换成费曼式说法：
 ```text
 先知道仓库、货架、调度员、监控台分别是谁，
 再去讨论某一个货架螺丝怎么拧。
@@ -21,22 +20,21 @@
 
 | 顺序 | 读什么 | 目标 |
 |---:|---|---|
-| 1 | `README.md` 的“一句话目标”和“项目定位” | 知道本仓库只做前期调研和补课 |
-| 2 | `docs/requirements_alignment.md` 的核心结论 | 先看技术要求到底在问什么，哪些内容本仓库只做知识地图 |
+| 1 | `README.md` 的“一句话目标”和“项目定位” | 知道这个仓库只做前期调研和补课 |
+| 2 | `docs/requirements_alignment.md` 的核心结论 | 先看技术要求到底在问什么，哪些内容这个仓库只做路线图 |
 | 3 | `docs/feynman_learning_path.md` 的核心结论和第 0 关 | 用人话讲出系统为什么存在 |
 | 4 | `docs/00_big_picture.md` | 看到数据面、RAID 层、控制面、NVMe 边界 |
 | 5 | `docs/working_modes.md` 的核心结论和“五种工作模式一览” | 知道自检、待机、记录、回放、边记边放分别在系统里干什么 |
 | 6 | `docs/acceptance_checklist.md` 的核心结论 | 分清 demo、教程、工程验收三者差别 |
 
 20 分钟后你应该能说：
-
 ```text
 这是一个“高速输入数据 -> FPGA 调度和保护 -> 多块 NVMe SSD 存储 -> 可观测可验收”的系统。
 ```
 
 ### 60 分钟：能讲清 RAID 和接口边界
 
-适合：准备参与讨论方案的人，或者要判断本仓库是否对齐技术要求的人。
+适合：准备参与讨论方案的人，或者要判断这个仓库是否对齐技术要求的人。
 
 | 顺序 | 读什么 | 目标 |
 |---:|---|---|
@@ -49,7 +47,6 @@
 | 7 | `docs/nvme_host_options.md` | 知道为什么第一阶段不直接实现完整 NVMe Host |
 
 60 分钟后你应该能回答：
-
 ```text
 哪些问题属于 RAID 算法？哪些属于 FPGA 数据流？哪些属于 NVMe/PCIe/IP 选型？哪些属于验收证据？
 ```
@@ -75,18 +72,18 @@
 | 角色 | 优先阅读 | 可以先跳过 | 你要带走的问题 |
 |---|---|---|---|
 | 新手学习者 | `docs/feynman_learning_path.md`、`docs/00_big_picture.md`、`docs/raid_basics.md` | RTL 细节 | 我能不能把系统讲给别人听？ |
-| 项目负责人 | `README.md`、`docs/requirements_alignment.md`、`docs/acceptance_checklist.md`、`docs/nvme_host_options.md` | 具体 Verilog | 当前仓库覆盖了哪些前期调研，哪些还不是工程交付？ |
+| 项目负责人 | `README.md`、`docs/requirements_alignment.md`、`docs/acceptance_checklist.md`、`docs/nvme_host_options.md` | 具体 Verilog | 现在仓库覆盖了哪些前期调研，哪些还不是工程交付？ |
 | 测试/验收工程师 | `docs/acceptance_checklist.md`、`docs/rebuild_and_scrub.md`、`docs/control_plane_registers.md` | RAID0 组合逻辑细节 | 哪些证据能证明状态、故障、恢复和资料一致？ |
 | 软件/驱动/控制面 | `docs/axis_axi_lite_basics.md`、`docs/control_plane_registers.md`、`labs/level0_python_model/demo_control_plane.py` | NVMe PHY/PCIe 细节 | 软件如何配置、观察、清中断、追踪 rebuild/scrub？ |
 | FPGA RTL 学习者 | `docs/fpga_architecture.md`、`rtl/xor_engine`、`rtl/lba_mapper` | 完整 NVMe Host 实现 | 哪些小模块适合先硬件化，哪些应先保持抽象？ |
 
 ## 术语先别慌：一句人话速查
 
-| 术语 | 一句话解释 | 在本仓库哪里看 |
+| 术语 | 一句话解释 | 在这个仓库哪里看 |
 |---|---|---|
 | AXIS | 高速数据传送带，valid/ready 决定这拍能不能交货 | `docs/axis_axi_lite_basics.md` |
 | AXI-Lite | 慢速控制台，软件通过寄存器配置和查看硬件 | `docs/axis_axi_lite_basics.md`、`docs/control_plane_registers.md` |
-| 工作模式 | 固存样机当前处在自检、待机、记录、回放还是边记边放；它决定数据面和控制面该做什么 | `docs/working_modes.md` |
+| 工作模式 | 固存样机现在处在自检、待机、记录、回放还是边记边放；它决定数据面和控制面该做什么 | `docs/working_modes.md` |
 | 边记边放 | 一边写入新载荷、一边回放旧数据，是最容易暴露缓存、仲裁、背压和死锁风险的模式 | `docs/working_modes.md` |
 | NVMe Host | 会和真实 NVMe SSD 说话的主机侧协议/IP/软件栈 | `docs/nvme_host_options.md` |
 | PCIe Gen3 x4 | NVMe SSD 常用高速通道规格之一，不等于已经有完整存储系统 | `docs/nvme_host_options.md` |
@@ -125,12 +122,12 @@
 6. rebuild、scrub、write hole 为什么会进入验收讨论？
 7. Python demo、RTL runner、工程样机验收三者的证据边界分别是什么？
 
-能答出来，就说明你已经完成本仓库的第一阶段目标：不是会写所有代码，而是有资格提出正确的工程问题。
+能答出来，就说明你已经完成这个仓库的第一阶段目标：不是会写所有代码，而是有资格提出正确的工程问题。
 
 ---
 
 ## 继续阅读
 
-⬅️ [上一篇：费曼学习路线](feynman_learning_path.md)  
-🏠 [回到网页学习目录](index.md)  
+⬅️ [上一篇：费曼学习路线](feynman_learning_path.md)<br>
+🏠 [回到课程目录](index.md)<br>
 ➡️ [下一篇：系统大图](00_big_picture.md)

@@ -1,6 +1,6 @@
 # RAID5 Write Path - 真正麻烦的是“小写”
 
-## 核心结论
+## 先抓住这句话
 
 RAID5 写入分三种路径：
 
@@ -10,7 +10,7 @@ RAID5 写入分三种路径：
 | read-modify-write | 只改少数 data block | 需要读 old data + old parity | 用“变化量 delta”修补 parity |
 | reconstruct write | 改较多但没写满 stripe | 需要读没被改的其他 data block | 拼出完整新 stripe，再 XOR 出新 parity |
 
-一句话：**RAID5 不怕算 XOR，怕的是 partial write 时 parity 必须和数据一起保持一致**。
+一句话记住：**RAID5 不怕算 XOR，怕的是 partial write 时 parity 必须和数据一起保持一致**。
 
 上一页 `raid5_parity.md` 讲的是“XOR 为什么能恢复一块坏盘”。本页讲写入控制器真正要面对的问题：主机只写一个小块时，RAID5 不能只改数据块，还必须把 parity 改对。
 
@@ -23,7 +23,6 @@ RAID5 写入分三种路径：
 | P | D0 | D1 | D2 |
 
 parity 定义是：
-
 ```text
 P = D0 XOR D1 XOR D2
 ```
@@ -33,13 +32,11 @@ P = D0 XOR D1 XOR D2
 ## 路径 1：full-stripe write
 
 主机一次给出完整 data stripe：
-
 ```text
 new_D0, new_D1, new_D2
 ```
 
 控制器直接做：
-
 ```text
 new_P = new_D0 XOR new_D1 XOR new_D2
 write disk1 <- new_D0
@@ -48,8 +45,7 @@ write disk3 <- new_D2
 write disk0 <- new_P
 ```
 
-这就是当前 Python 模型里的 `RAID5.write_full_stripe()`：
-
+这就是现在 Python 模型里的 `RAID5.write_full_stripe()`：
 ```text
 1. data_disk_order(stripe) 找到 D0/D1/D2 应该写到哪些盘；
 2. xor_blocks(data_blocks) 算出 parity；
@@ -61,7 +57,6 @@ write disk0 <- new_P
 ## 路径 2：read-modify-write
 
 现在主机只改 `D1`：
-
 ```text
 old stripe: D0, old_D1, D2, old_P
 new write :      new_D1
@@ -70,13 +65,11 @@ new write :      new_D1
 不能只写 `new_D1`，因为 `P = D0 XOR D1 XOR D2` 里的 D1 变了，P 也必须变。
 
 read-modify-write 的关键公式是：
-
 ```text
 new_P = old_P XOR old_D1 XOR new_D1
 ```
 
 如果一次 partial write 同时改多个 data block，就把每个被修改块的 old/new 都 XOR 进去：
-
 ```text
 new_P = old_P
         XOR old_Di XOR new_Di
@@ -85,7 +78,6 @@ new_P = old_P
 ```
 
 为什么成立？
-
 ```text
 old_P = D0 XOR old_D1 XOR D2
 new_P = D0 XOR new_D1 XOR D2
@@ -97,14 +89,12 @@ old_P XOR old_D1 XOR new_D1
 ```
 
 因为同一个值 XOR 两次会抵消：
-
 ```text
 old_D1 XOR old_D1 = 0
 x XOR 0 = x
 ```
 
 所以 RMW 只需要读两个旧块：
-
 ```text
 read old_D1
 read old_P
@@ -129,14 +119,12 @@ write new_P
 如果主机改的不是 1 个块，而是很多块，但还没写满 stripe，RMW 未必划算。
 
 还是 4 盘 stripe：
-
 ```text
 old stripe: old_D0, old_D1, old_D2, old_P
 new write : new_D0, new_D1
 ```
 
 RMW 做法会读：
-
 ```text
 old_D0, old_D1, old_P
 ```
@@ -144,13 +132,11 @@ old_D0, old_D1, old_P
 然后分别把两个变化修到 parity 上。
 
 reconstruct write 换个想法：既然新 `D0` 和新 `D1` 已经有了，只要再读没被改的 `old_D2`，就能拼出完整的新 data stripe：
-
 ```text
 new_P = new_D0 XOR new_D1 XOR old_D2
 ```
 
 也就是：
-
 ```text
 read old_D2
 new_P = XOR(所有新数据块 + 没被改的旧数据块)
@@ -171,7 +157,6 @@ write new_P
 | reconstruct write | N-W 个未改 data | N - W |
 
 简单选择规则：
-
 ```text
 if W + 1 <= N - W:
     用 read-modify-write
@@ -184,7 +169,6 @@ else:
 ## 最小手算例子
 
 给定：
-
 ```text
 old_D0 = 0xaa
 old_D1 = 0xcc
@@ -193,7 +177,6 @@ new_D1 = 0x0f
 ```
 
 只改 `D1`，RMW 算：
-
 ```text
 new_P = old_P XOR old_D1 XOR new_D1
       = 0x66 XOR 0xcc XOR 0x0f
@@ -201,7 +184,6 @@ new_P = old_P XOR old_D1 XOR new_D1
 ```
 
 检查完整公式：
-
 ```text
 old_D0 XOR new_D1 = 0xaa XOR 0x0f = 0xa5
 ```
@@ -210,8 +192,7 @@ old_D0 XOR new_D1 = 0xaa XOR 0x0f = 0xa5
 
 ## write hole：为什么下一关很重要？
 
-partial write 至少要写两个地方：
-
+partial write 起码要写两个地方：
 ```text
 new data block
 new parity block
@@ -220,7 +201,6 @@ new parity block
 如果只写完 data，掉电了，parity 还是旧的；如果只写完 parity，掉电了，data 还是旧的。这样阵列看起来每块盘都“没坏”，但同一个 stripe 内的数据和 parity 已经对不上。
 
 这就是 RAID5 经典的 **write hole** 直觉：
-
 ```text
 数据写了一半 + parity 写了一半 + 掉电/复位/超时
 => stripe 内部不再自洽
@@ -249,7 +229,6 @@ new parity block
 | 掉电或复位中断 | metadata / journal / recovery state machine |
 
 在 FPGA 里，RAID5 write path 不是一个“XOR 模块”就结束，而是一条小流水线：
-
 ```text
 host write request
     -> LBA mapper
@@ -261,7 +240,7 @@ host write request
     -> completion / recovery metadata
 ```
 
-## 手算小练习
+## 自己算一遍
 
 1. 一个 6 盘 RAID5 stripe 有几个 data block？
 2. 6 盘 RAID5 中，一次 partial write 改 1 个 data block，RMW 和 reconstruct 分别要读几个旧块？
@@ -277,21 +256,20 @@ host write request
 4. `0x66 XOR 0xcc XOR 0x0f = 0xa5`；
 5. 因为 data 和 parity 必须表达同一个 stripe 状态，掉电打断后可能一个新一个旧，阵列表面健康但 parity 已经不可信。
 
-## 动手检查
+## 如果你想动手验证
 
 从仓库根目录运行：
-
 ```bash
 python labs/level0_python_model/demo_layout.py
 python -m pytest -q labs/level0_python_model
 ```
 
-当前 Python 模型只实现 `write_full_stripe()`，没有实现 partial write。这样设计是刻意的：先把 RAID5 parity 的正确性跑通，再单独学习 RMW、reconstruct write 和 write hole。
+现在 Python 模型只实现 `write_full_stripe()`，没有实现 partial write。这样设计是刻意的：先把 RAID5 parity 的正确性跑通，再单独学习 RMW、reconstruct write 和 write hole。
 
 ---
 
 ## 继续阅读
 
-⬅️ [上一篇：RAID5 校验](raid5_parity.md)  
-🏠 [回到网页学习目录](index.md)  
+⬅️ [上一篇：RAID5 校验](raid5_parity.md)<br>
+🏠 [回到课程目录](index.md)<br>
 ➡️ [下一篇：Write Hole](write_hole.md)

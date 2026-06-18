@@ -1,10 +1,10 @@
 # FPGA Architecture - 从需求地图走到 RTL 小模块
 
-## 核心结论
+## 先抓住这句话
 
-第一阶段不要直接做“完整星载固存 FPGA 工程”。
+第一阶段不要一上来就做“完整星载固存 FPGA 工程”。
 
-更稳的路线是：先把技术要求拆成四张图，再把其中最核心、最容易验证的 RAID 行为做成 Python golden model 和 RTL 小模块。
+更稳的走法是：先把技术要求拆成几张图，再把最核心、最容易验证的 RAID 行为，做成 Python golden model 和 RTL 小模块。
 
 ```text
 技术要求
@@ -16,7 +16,7 @@
 
 这页只定义早期架构边界，不承诺真实 NVMe、PCIe、板级约束或 40 Gbps 性能。真实 SSD 接入路线见 [`nvme_host_options.md`](nvme_host_options.md)。
 
-继续拆模块前，建议先读 [`axis_axi_lite_basics.md`](axis_axi_lite_basics.md)：它把 AXIS 解释成“数据传送带”，把 AXI-Lite 解释成“控制台”，能避免把高速数据路径和管理寄存器混成一个大黑盒。
+继续拆模块前，建议先读 [`axis_axi_lite_basics.md`](axis_axi_lite_basics.md)：那篇会把 AXIS 讲成“数据传送带”，把 AXI-Lite 讲成“控制台”。先分清这两个概念，就不容易把高速数据路径和管理寄存器搅成一个大黑盒。
 
 ## 从技术要求拆出的四个面
 

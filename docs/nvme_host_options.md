@@ -1,11 +1,10 @@
 # NVMe Host 实现路线 - 为什么先用“抽象磁盘端口”
 
-## 核心结论
+## 先抓住这句话
 
 在这个教程里，**NVMe SSD 先不要当成第一阶段 RTL 目标**。
 
-用费曼法说：
-
+换成费曼式说法：
 ```text
 RAID 层      = 仓库调度规则：数据分到哪块盘、校验放在哪里、坏盘怎么恢复。
 NVMe Host   = 通往真实 SSD 的高速公路收费站 + 交通规则 + 排队系统。
@@ -15,7 +14,6 @@ PCIe PHY/IP = 高速公路本身。
 如果新人一上来同时学 RAID、AXIS、AXI-Lite、PCIe、NVMe queue、DMA、板级时序，就会把问题混成一个大黑盒。
 
 更稳的路线是：
-
 ```text
 先把 RAID 行为跑通
   -> 用 virtual disk / BRAM / 文件模型当“假 SSD”
@@ -40,7 +38,6 @@ PCIe PHY/IP = 高速公路本身。
 | SMART / Health | 健康状态 | 对遥测、告警、成员盘降级有用 |
 
 ## 路线 A：厂商 NVMe/PCIe IP
-
 ```text
 FPGA RAID/数据面 -> 厂商 NVMe Host IP -> PCIe IP/PHY -> NVMe SSD
 ```
@@ -64,7 +61,6 @@ FPGA RAID/数据面 -> 厂商 NVMe Host IP -> PCIe IP/PHY -> NVMe SSD
 当目标是工程样机、性能验收和真实 SSD 联调时，通常优先评估这条路。
 
 ## 路线 B：开源 NVMe Host 参考
-
 ```text
 FPGA RAID/数据面 -> 开源 NVMe Host -> PCIe core -> NVMe SSD
 ```
@@ -87,7 +83,6 @@ FPGA RAID/数据面 -> 开源 NVMe Host -> PCIe core -> NVMe SSD
 适合研究和概念验证；如果要进入工程交付，需要额外做成熟度评估和长时间稳定性测试。
 
 ## 路线 C：SoC / CPU 管 NVMe，FPGA 管 RAID 数据面
-
 ```text
 CPU/SoC/Linux 负责 NVMe 驱动
 FPGA 负责 RAID 数据面、校验、缓存或加速
@@ -113,7 +108,6 @@ FPGA 负责 RAID 数据面、校验、缓存或加速
 适合调研、原型验证、降低 NVMe 接入风险，也适合教学阶段理解系统边界。
 
 ## 路线 D：PCIe DMA + 主机模拟盘
-
 ```text
 FPGA <-> PCIe DMA <-> PC 内存/文件/SSD 模拟服务
 ```
@@ -137,7 +131,6 @@ FPGA <-> PCIe DMA <-> PC 内存/文件/SSD 模拟服务
 适合中期联调和可观测测试平台，不适合作为最终样机路线。
 
 ## 路线 E：DDR / BRAM / 文件模型继续做算法验证
-
 ```text
 RAID controller -> virtual disk port -> BRAM/DDR/file model
 ```
@@ -158,22 +151,21 @@ RAID controller -> virtual disk port -> BRAM/DDR/file model
 
 ### 适合什么时候选
 
-本仓库第一阶段就选这条路：先把“仓库调度规则”讲清楚，再谈真实高速公路。
+这个仓库第一阶段就选这条路：先把“仓库调度规则”讲清楚，再谈真实高速公路。
 
 ## 简单取舍表
 
-| 路线 | 开发量 | 工程风险 | 性能代表性 | 教学友好 | 适合本仓库当前阶段 |
+| 路线 | 开发量 | 工程风险 | 性能代表性 | 教学友好 | 适合这个仓库现在阶段 |
 |---|---:|---:|---:|---:|---|
 | 厂商 NVMe/PCIe IP | 中到高 | 中 | 高 | 低 | 暂不直接做 |
 | 开源 NVMe Host | 高 | 高 | 中到高 | 中 | 只做调研参考 |
-| SoC/CPU 管 NVMe | 中 | 中 | 中 | 中到高 | 可作为后续原型路线 |
-| PCIe DMA + 主机模拟 | 中 | 中 | 中 | 高 | 可作为后续联调工具 |
-| DDR/BRAM/文件模型 | 低 | 低 | 低 | 最高 | 当前首选 |
+| SoC/CPU 管 NVMe | 中 | 中 | 中 | 中到高 | 可作为后面原型路线 |
+| PCIe DMA + 主机模拟 | 中 | 中 | 中 | 高 | 可作为后面联调工具 |
+| DDR/BRAM/文件模型 | 低 | 低 | 低 | 最高 | 现在首选 |
 
-## 本教程推荐路线
+## 本教程推荐阅读顺序
 
-**当前阶段的明确推荐：先做 `abstract disk port`，真实 NVMe Host 只做路线调研，不进入完整实现。**
-
+**现在阶段的明确推荐：先做 `abstract disk port`，真实 NVMe Host 只做路线调研，不进入完整实现。**
 ```text
 阶段 0：读需求，拆四个面
 阶段 1：Python virtual disk / RAID golden model
@@ -202,11 +194,10 @@ RAID controller -> virtual disk port -> BRAM/DDR/file model
 | SSD 与健康状态 | SSD 数量、容量、NVMe 版本、SMART/健康信息、掉盘检测、坏块反馈怎么拿？ | 控制面先保留成员盘状态字段，用模拟错误代替真实盘错误。 |
 | RAID/Host 边界 | RAID 层和 Host 层之间的请求、完成、错误、flush、重试语义是否定义清楚？ | 先设计统一 `disk_port`，不要让 RAID 逻辑直接绑定某个 NVMe IP。 |
 | 异常与恢复 | 错误注入、掉盘、重建进度、scrub 结果、write hole 风险如何观测？ | 先在 Python 模型和小 RTL demo 中做可重复故障场景。 |
-| 稳定性验收 | 72 小时稳定性、温度/功耗/复位/掉电场景、日志留存由谁验证？ | 把这些列入工程验收清单，不放进本仓库第一阶段目标。 |
+| 稳定性验收 | 72 小时稳定性、温度/功耗/复位/掉电场景、日志留存由谁验证？ | 把这些列入工程验收清单，不放进这个仓库第一阶段目标。 |
 | 联调环境 | 是否有 PCIe 分析、ILA/VIO、日志采集、可重复数据源和对照脚本？ | 先做 PCIe DMA/主机模拟或纯软件回放平台。 |
 
 一句话决策门槛：
-
 ```text
 如果 disk_port 的行为模型、错误模型、重建状态都还没跑通，
 就不要把风险提前搬到 PCIe/NVMe Host 层。
@@ -215,18 +206,17 @@ RAID controller -> virtual disk port -> BRAM/DDR/file model
 ## 给新人一句话
 
 不要把“会做 RAID”和“会接 NVMe SSD”混为一谈。
-
 ```text
 RAID 是数据怎么分、怎么校验、怎么恢复。
 NVMe Host 是怎么安全高效地和真实 SSD 说话。
 ```
 
-本仓库先教前者，并把后者放进路线图，而不是假装已经解决。
+这个仓库先教前者，并把后者放进路线图，而不是假装已经解决。
 
 ---
 
 ## 继续阅读
 
-⬅️ [上一篇：控制寄存器](control_plane_registers.md)  
-🏠 [回到网页学习目录](index.md)  
+⬅️ [上一篇：控制寄存器](control_plane_registers.md)<br>
+🏠 [回到课程目录](index.md)<br>
 ➡️ [下一篇：RAID 基础](raid_basics.md)
